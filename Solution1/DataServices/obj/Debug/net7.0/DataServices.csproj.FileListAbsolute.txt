@@ -1,0 +1,15 @@
+C:\Users\mshaik5\Desktop\Full_Stack\Solution1\DataServices\bin\Debug\net7.0\DataServices.deps.json
+C:\Users\mshaik5\Desktop\Full_Stack\Solution1\DataServices\bin\Debug\net7.0\DataServices.runtimeconfig.json
+C:\Users\mshaik5\Desktop\Full_Stack\Solution1\DataServices\bin\Debug\net7.0\DataServices.dll
+C:\Users\mshaik5\Desktop\Full_Stack\Solution1\DataServices\bin\Debug\net7.0\DataServices.pdb
+C:\Users\mshaik5\Desktop\Full_Stack\Solution1\DataServices\obj\Debug\net7.0\DataServices.csproj.AssemblyReference.cache
+C:\Users\mshaik5\Desktop\Full_Stack\Solution1\DataServices\obj\Debug\net7.0\DataServices.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\mshaik5\Desktop\Full_Stack\Solution1\DataServices\obj\Debug\net7.0\DataServices.AssemblyInfoInputs.cache
+C:\Users\mshaik5\Desktop\Full_Stack\Solution1\DataServices\obj\Debug\net7.0\DataServices.AssemblyInfo.cs
+C:\Users\mshaik5\Desktop\Full_Stack\Solution1\DataServices\obj\Debug\net7.0\DataServices.csproj.CoreCompileInputs.cache
+C:\Users\mshaik5\Desktop\Full_Stack\Solution1\DataServices\obj\Debug\net7.0\DataServices.dll
+C:\Users\mshaik5\Desktop\Full_Stack\Solution1\DataServices\obj\Debug\net7.0\refint\DataServices.dll
+C:\Users\mshaik5\Desktop\Full_Stack\Solution1\DataServices\obj\Debug\net7.0\DataServices.pdb
+C:\Users\mshaik5\Desktop\Full_Stack\Solution1\DataServices\obj\Debug\net7.0\DataServices.genruntimeconfig.cache
+C:\Users\mshaik5\Desktop\Full_Stack\Solution1\DataServices\obj\Debug\net7.0\ref\DataServices.dll
+C:\Users\mshaik5\Desktop\Full_Stack\Solution1\DataServices\obj\Debug\net7.0\DataServices.sourcelink.json
