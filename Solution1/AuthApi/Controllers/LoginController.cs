@@ -1,4 +1,5 @@
 ﻿using AuthApi.Helpers;
+using Azure.Core;
 using DataServices.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -17,14 +18,10 @@ namespace AuthApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] EmployeeLogin request)
+        //[HttpGet]
+        public async Task<IActionResult> Post(string username, string password)
         {
-            if (request == null || string.IsNullOrEmpty(request.Username) || string.IsNullOrEmpty(request.Password))
-            {
-                return BadRequest("Username and password are required.");
-            }
-
-            string token = await _tokenGeneration.Validate(request.Username, request.Password);
+            string token = await _tokenGeneration.Validate(username, password);
             if (!string.IsNullOrEmpty(token))
             {
                 return Ok(token);
