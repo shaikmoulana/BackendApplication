@@ -14,7 +14,7 @@ namespace DataServices.Data
         {
         }
 
-        public DbSet<EmployeeLogin> EmployeeLoginTbl { get; set; }
+        //public DbSet<EmployeeLogin> EmployeeLoginTbl { get; set; }
 
         public DbSet<Employee> TblEmployee { get; set; }
         //public DbSet<Blogs> TblBlogs { get; set; }

@@ -19,29 +19,29 @@ namespace AuthApi.Helpers
             _employeeLoginRepository = employeeLoginRepository;
         }
 
-        public async Task<string> Validate(string username, string password)
+        public async Task<string> Validate(string emailId, string password)
         {
             string token = string.Empty;
-            bool result = await _employeeLoginRepository.Validate(username, password);
+            bool result = await _employeeLoginRepository.Validate(emailId, password);
             if (result)
             {
-                token = GenerateToken(username);
+                token = GenerateToken(emailId);
             }
             return token;
         }
 
-        private string GenerateToken(string username)
+        private string GenerateToken(string emailId)
         {
             try
             {
-                _logger.LogInformation($"Begin GenerateToken method for user: {username}");
+                _logger.LogInformation($"Begin GenerateToken method for user: {emailId}");
 
                 var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
                 var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
                 var claims = new List<Claim>()
                 {
-                new Claim(ClaimTypes.Name, username)
+                new Claim(ClaimTypes.Name, emailId)
                 };
 
                 foreach (var role in SourceRoles)

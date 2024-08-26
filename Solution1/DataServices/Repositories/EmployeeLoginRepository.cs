@@ -19,13 +19,13 @@ namespace DataServices.Repositories
             _logger = logger;
         }
 
-        public async Task<bool> Validate(string username, string password)
+        public async Task<bool> Validate(string emailId, string password)
         {
             try
             {
-                if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+                if (!string.IsNullOrEmpty(emailId) && !string.IsNullOrEmpty(password))
                 {
-                    var Obj = await _dbContext.EmployeeLoginTbl.FirstOrDefaultAsync(u => u.Username == username && u.Password == password);
+                    var Obj = await _dbContext.TblEmployee.FirstOrDefaultAsync(u => u.EmailId == emailId && u.Password == password);
                     if (Obj != null) return true;
                     else return false;
                 }

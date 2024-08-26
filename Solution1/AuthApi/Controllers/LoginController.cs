@@ -18,17 +18,17 @@ namespace AuthApi.Controllers
         }
 
         [HttpPost]
-        //[HttpGet]
-        public async Task<IActionResult> Post(string username, string password)
+        //[HttpGet("GetToken")]
+        public async Task<IActionResult> GetToken(string emailId, string password)
         {
-            string token = await _tokenGeneration.Validate(username, password);
+            string token = await _tokenGeneration.Validate(emailId, password);
             if (!string.IsNullOrEmpty(token))
             {
                 return Ok(token);
             }
             else
             {
-                return Unauthorized("Invalid username or password.");
+                return Unauthorized("Invalid emailId or password.");
             }
         }
         [HttpGet]
