@@ -1,4 +1,5 @@
-﻿using DataServices.Models;
+﻿
+using DataServices.Models;
 using EmployeeApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,7 +46,6 @@ namespace EmployeeApi.Controllers
         {
             var employee = new Employee
             {
-                // Map properties from DTO to entity
                 Name = empDto.Name,
                 DesignationId = empDto.DesignationId,
                 EmployeeID = empDto.EmployeeID,
@@ -60,8 +60,7 @@ namespace EmployeeApi.Controllers
                 CreatedDate = empDto.CreatedDate,
                 UpdatedBy = empDto.UpdatedBy,
                 UpdatedDate = empDto.UpdatedDate,
-                Password = empDto.Password,
-
+                Password = PasswordHasher.HashPassword(empDto.Password) // Hash the password
             };
 
             try
@@ -74,6 +73,7 @@ namespace EmployeeApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
 
 
 
@@ -101,18 +101,18 @@ namespace EmployeeApi.Controllers
 
             _logger.LogInformation("Updating employee with id: {Id}", id);
 
-            // Update properties from DTO
             existingEmployee.Name = empDto.Name;
             existingEmployee.DepartmentId = empDto.DepartmentId;
             existingEmployee.IsActive = empDto.IsActive;
             existingEmployee.UpdatedBy = empDto.UpdatedBy;
             existingEmployee.UpdatedDate = empDto.UpdatedDate;
-            existingEmployee.Password = empDto.Password;
+            existingEmployee.Password = PasswordHasher.HashPassword(empDto.Password); // Hash the password
 
             await _employeeService.Update(existingEmployee);
 
             return Ok(existingEmployee);
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
