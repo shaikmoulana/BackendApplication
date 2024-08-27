@@ -4,10 +4,10 @@ namespace EmployeeApi.Services
 {
     public interface IEmployeeTechnologyService
     {
-        Task<IEnumerable<EmployeeTechnology>> GetAll();
-        Task<EmployeeTechnology> Get(string id);
-        Task<EmployeeTechnology> Add(EmployeeTechnology employeeTechnology);
-        Task<EmployeeTechnology> Update(EmployeeTechnology employeeTechnology);
+        Task<IEnumerable<EmployeeTechnologyDTO>> GetAll();
+        Task<EmployeeTechnologyDTO> Get(string id);
+        Task<EmployeeTechnologyDTO> Add(EmployeeTechnologyDTO employeeTechnology);
+        Task<EmployeeTechnologyDTO> Update(EmployeeTechnologyDTO employeeTechnology);
         Task<bool> Delete(string id);
     }
 }

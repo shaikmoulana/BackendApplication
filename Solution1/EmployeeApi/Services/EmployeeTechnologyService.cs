@@ -1,49 +1,116 @@
-﻿
+﻿using DataServices.Data;
 using DataServices.Models;
 using DataServices.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeApi.Services
 {
     public class EmployeeTechnologyService : IEmployeeTechnologyService
     {
         private readonly IRepository<EmployeeTechnology> _repository;
-        public EmployeeTechnologyService(IRepository<EmployeeTechnology> repository)
+        private readonly DataBaseContext _context;
+        public EmployeeTechnologyService(IRepository<EmployeeTechnology> repository, DataBaseContext context)
         {
             _repository = repository;
+            _context = context;
         }
 
-        public async Task<IEnumerable<EmployeeTechnology>> GetAll()
+        public async Task<IEnumerable<EmployeeTechnologyDTO>> GetAll()
         {
-            return await _repository.GetAll();
-        }
-        public async Task<EmployeeTechnology> Get(string id)
-        {
-            return await _repository.Get(id);
-        }
+            var empTechnologies = await _context.TblEmployeeTechnology.Include(e => e.Technologies).ToListAsync();
+            var empTechDtos = new List<EmployeeTechnologyDTO>();
 
-        public async Task<EmployeeTechnology> Add(EmployeeTechnology employeeTechnology)
-        {
-            return await _repository.Create(employeeTechnology);
-        }
-
-        public async Task<EmployeeTechnology> Update(EmployeeTechnology employeeTechnology)
-        {
-            // Retrieve the existing employee from the database
-/*            var existingEmployeeTechnology = await _repository.Get(employeeTechnology.Id);
-            if (existingEmployeeTechnology == null)
+            foreach (var e in empTechnologies)
             {
-                throw new ArgumentException($"Employee with ID {employeeTechnology.Id} not found.");
+                empTechDtos.Add(new EmployeeTechnologyDTO()
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    Technology = e.Technologies?.Name,
+                    IsActive = e.IsActive,
+                    CreatedDate = DateTime.Now,
+                    CreatedBy = e.CreatedBy,
+                    UpdatedDate = DateTime.Now,
+                    UpdatedBy = e.UpdatedBy
+                });
+
             }
 
-            // Update properties with the new values
-            existingEmployeeTechnology.Name = employeeTechnology.Name;
-            existingEmployeeTechnology.TechnologyId = employeeTechnology.TechnologyId;
-            existingEmployeeTechnology.UpdatedDate = DateTime.Now;
-            existingEmployeeTechnology.UpdatedBy = employeeTechnology.UpdatedBy;
-            existingEmployeeTechnology.UpdatedDate = employeeTechnology.UpdatedDate;
-            // Call repository to update the employeeTechnology
-            return await _repository.Update(existingEmployeeTechnology);*/
-            return await _repository.Update(employeeTechnology);
+            return empTechDtos;
+        }
+        public async Task<EmployeeTechnologyDTO> Get(string id)
+        {
+            var employeeTechnology = await _context.TblEmployeeTechnology
+               .Include(e => e.Technologies)
+               .FirstOrDefaultAsync(t => t.Id == id);
+            if (employeeTechnology == null) return null;
+
+            return new EmployeeTechnologyDTO
+            {
+                Id = employeeTechnology.Id,
+                Name = employeeTechnology.Name,
+                Technology = employeeTechnology.Technologies?.Name,
+                IsActive = employeeTechnology.IsActive,
+                CreatedDate = DateTime.Now,
+                CreatedBy = employeeTechnology.CreatedBy,
+                UpdatedDate = DateTime.Now,
+                UpdatedBy = employeeTechnology.UpdatedBy
+            };
+        }
+
+        public async Task<EmployeeTechnologyDTO> Add(EmployeeTechnologyDTO empTechDto)
+        {
+            var technology = await _context.TblTechnology
+                .FirstOrDefaultAsync(t => t.Name == empTechDto.Technology);
+
+            if (technology == null)
+                throw new KeyNotFoundException("Technology not found");
+
+            var employeeTechnology = new EmployeeTechnology
+            {
+                Name = empTechDto.Name,
+                TechnologyId = technology.Id,
+                IsActive = true,
+                CreatedDate = DateTime.Now,
+                CreatedBy = empTechDto.CreatedBy,
+                UpdatedDate = DateTime.Now,
+                UpdatedBy = empTechDto.UpdatedBy
+            };
+
+            _context.TblEmployeeTechnology.Add(employeeTechnology);
+            await _context.SaveChangesAsync();
+
+            empTechDto.Id = employeeTechnology.Id;
+            return empTechDto;
+
+        }
+
+        public async Task<EmployeeTechnologyDTO> Update(EmployeeTechnologyDTO empTechDto)
+        {
+
+            var employeeTechnology = await _context.TblEmployeeTechnology.FindAsync(empTechDto.Id);
+
+            if (employeeTechnology == null)
+                throw new KeyNotFoundException("EmployeeTechnology not found");
+
+            var technology = await _context.TblTechnology
+                .FirstOrDefaultAsync(t => t.Name == empTechDto.Technology);
+
+            if (technology == null)
+                throw new KeyNotFoundException("Technology not found");
+
+            employeeTechnology.Name = empTechDto.Name;
+            employeeTechnology.TechnologyId = technology.Id;
+            employeeTechnology.IsActive = true;
+            employeeTechnology.CreatedBy = empTechDto.CreatedBy;
+            employeeTechnology.CreatedDate = DateTime.Now;
+            employeeTechnology.UpdatedBy = empTechDto.UpdatedBy;
+            employeeTechnology.UpdatedDate = DateTime.Now;
+
+            _context.Entry(employeeTechnology).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return empTechDto;
         }
 
         public async Task<bool> Delete(string id)

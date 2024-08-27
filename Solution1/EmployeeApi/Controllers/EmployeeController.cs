@@ -1,5 +1,4 @@
-﻿
-using DataServices.Models;
+﻿using DataServices.Models;
 using EmployeeApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,15 +18,15 @@ namespace EmployeeApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Employee>>> GetAll()
+        public async Task<ActionResult<IEnumerable<EmployeeDTO>>> GetAll()
         {
-            _logger.LogInformation("Fetching all employeeTechnology");
-            var employee = await _employeeService.GetAll();
-            return Ok(employee);
+            _logger.LogInformation("Fetching all employees");
+            var employees = await _employeeService.GetAll();
+            return Ok(employees);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> Get(string id)
+        public async Task<ActionResult<EmployeeDTO>> Get(string id)
         {
             _logger.LogInformation("Fetching employee with id: {Id}", id);
             var employee = await _employeeService.Get(id);
@@ -44,38 +43,26 @@ namespace EmployeeApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(EmployeeDTO empDto)
         {
-            var employee = new Employee
+            if (!ModelState.IsValid)
             {
-                Name = empDto.Name,
-                DesignationId = empDto.DesignationId,
-                EmployeeID = empDto.EmployeeID,
-                EmailId = empDto.EmailId,
-                DepartmentId = empDto.DepartmentId,
-                ReportingTo = empDto.ReportingTo,
-                JoiningDate = empDto.JoiningDate,
-                RelievingDate = empDto.RelievingDate,
-                Projection = empDto.Projection,
-                IsActive = empDto.IsActive,
-                CreatedBy = empDto.CreatedBy,
-                CreatedDate = empDto.CreatedDate,
-                UpdatedBy = empDto.UpdatedBy,
-                UpdatedDate = empDto.UpdatedDate,
-                Password = PasswordHasher.HashPassword(empDto.Password) // Hash the password
-            };
+                _logger.LogWarning("Invalid model state for creating Employee");
+                return BadRequest(ModelState);
+            }
+
+            _logger.LogInformation("Creating a new Employee");
 
             try
             {
-                await _employeeService.Add(employee);
-                return Ok(employee);
+                var createdEmployee = await _employeeService.Add(empDto);
+                return CreatedAtAction(nameof(Get), new { id = createdEmployee.Id }, createdEmployee);
             }
-            catch (ArgumentException ex)
+            catch (KeyNotFoundException ex)
             {
+                _logger.LogWarning(ex.Message);
                 return BadRequest(ex.Message);
             }
+
         }
-
-
-
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] EmployeeDTO empDto)
@@ -92,27 +79,18 @@ namespace EmployeeApi.Controllers
                 return BadRequest("Employee ID mismatch.");
             }
 
-            var existingEmployee = await _employeeService.Get(id);
-            if (existingEmployee == null)
+            try
             {
-                _logger.LogWarning("Employee with id: {Id} not found", id);
-                return NotFound();
+                await _employeeService.Update(empDto);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return NotFound(ex.Message);
             }
 
-            _logger.LogInformation("Updating employee with id: {Id}", id);
-
-            existingEmployee.Name = empDto.Name;
-            existingEmployee.DepartmentId = empDto.DepartmentId;
-            existingEmployee.IsActive = empDto.IsActive;
-            existingEmployee.UpdatedBy = empDto.UpdatedBy;
-            existingEmployee.UpdatedDate = empDto.UpdatedDate;
-            existingEmployee.Password = PasswordHasher.HashPassword(empDto.Password); // Hash the password
-
-            await _employeeService.Update(existingEmployee);
-
-            return Ok(existingEmployee);
+            return NoContent();
         }
-
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
@@ -128,6 +106,5 @@ namespace EmployeeApi.Controllers
 
             return NoContent();
         }
-
     }
 }

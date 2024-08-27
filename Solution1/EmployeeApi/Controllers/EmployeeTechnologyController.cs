@@ -1,5 +1,4 @@
-﻿
-using DataServices.Models;
+﻿using DataServices.Models;
 using EmployeeApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,61 +8,64 @@ namespace EmployeeApi.Controllers
     [ApiController]
     public class EmployeeTechnologyController : ControllerBase
     {
-        private readonly IEmployeeTechnologyService _employeeTechnologyService;
+        private readonly IEmployeeTechnologyService _Service;
         private readonly ILogger<EmployeeTechnologyController> _logger;
-        public EmployeeTechnologyController(IEmployeeTechnologyService employeeTechnologyService, ILogger<EmployeeTechnologyController> logger)
+
+        public EmployeeTechnologyController(IEmployeeTechnologyService Service, ILogger<EmployeeTechnologyController> logger)
         {
-            _employeeTechnologyService = employeeTechnologyService;
+            _Service = Service;
             _logger = logger;
         }
 
         [HttpGet]
-        public async Task<ActionResult<EmployeeTechnology>> GetAll()
+        public async Task<ActionResult<IEnumerable<EmployeeTechnologyDTO>>> GetAll()
         {
-            _logger.LogInformation("Fetching all employeeTechnology");
-            var employeeTechnology = await _employeeTechnologyService.GetAll();
-            return Ok(employeeTechnology);
+            _logger.LogInformation("Fetching all employeeTechnologies");
+            var employeeTechnologies = await _Service.GetAll();
+            return Ok(employeeTechnologies);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<EmployeeTechnology>> Get(string id)
+        public async Task<ActionResult<EmployeeTechnologyDTO>> Get(string id)
         {
-            _logger.LogInformation("Fetching employeeTechnology with id: {Id}", id);
-            var employeeTechnology = await _employeeTechnologyService.Get(id);
+            _logger.LogInformation("Fetching employee with id: {Id}", id);
+            var employeeTechnology = await _Service.Get(id);
 
             if (employeeTechnology == null)
             {
-                _logger.LogWarning("EmployeeTechnology with id: {Id} not found", id);
+                _logger.LogWarning("Employee with id: {Id} not found", id);
                 return NotFound();
             }
+
             return Ok(employeeTechnology);
         }
 
         [HttpPost]
-        public async Task<ActionResult<EmployeeTechnology>> Create([FromBody] EmployeeTechnologyDTO emptechDto)
+        public async Task<IActionResult> Create(EmployeeTechnologyDTO empTechDto)
         {
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Invalid model state for creating employeeTechnology");
+                _logger.LogWarning("Invalid model state for creating Employee");
                 return BadRequest(ModelState);
             }
-            _logger.LogInformation("Creating a new employeeTechnology");
-            var employeeTechnology = new EmployeeTechnology
+
+            _logger.LogInformation("Creating a new Employee");
+
+            try
             {
-                Name = emptechDto.Name,
-                TechnologyId = emptechDto.TechnologyId,
-                IsActive = emptechDto.IsActive,
-                CreatedBy = emptechDto.CreatedBy,
-                CreatedDate = emptechDto.CreatedDate,
-                UpdatedBy = emptechDto.UpdatedBy,
-                UpdatedDate = emptechDto.UpdatedDate
-            };
-            var createdEmployeeTechnology = await _employeeTechnologyService.Add(employeeTechnology);
-            return CreatedAtAction(nameof(Get), new { id = createdEmployeeTechnology.Id }, createdEmployeeTechnology);
+                var createdEmployeeTechnology = await _Service.Add(empTechDto);
+                return CreatedAtAction(nameof(Get), new { id = createdEmployeeTechnology.Id }, createdEmployeeTechnology);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest(ex.Message);
+            }
+
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, [FromBody] EmployeeTechnologyDTO emptechDto)
+        public async Task<IActionResult> Update(string id, [FromBody] EmployeeTechnologyDTO empTechDto)
         {
             if (!ModelState.IsValid)
             {
@@ -71,47 +73,37 @@ namespace EmployeeApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != emptechDto.Id)
+            if (id != empTechDto.Id)
             {
                 _logger.LogWarning("EmployeeTechnology id: {Id} does not match with the id in the request body", id);
                 return BadRequest("EmployeeTechnology ID mismatch.");
             }
 
-            var existingEmployeeTechnology = await _employeeTechnologyService.Get(id);
-            if (existingEmployeeTechnology == null)
+            try
             {
-                _logger.LogWarning("EmployeeTechnology with id: {Id} not found", id);
-                return NotFound();
+                await _Service.Update(empTechDto);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return NotFound(ex.Message);
             }
 
-            _logger.LogInformation("Updating employeeTechnology with id: {Id}", id);
-
-            // Update properties from DTO
-            existingEmployeeTechnology.Name = emptechDto.Name;
-            existingEmployeeTechnology.TechnologyId = emptechDto.TechnologyId;
-            existingEmployeeTechnology.IsActive = emptechDto.IsActive;
-            existingEmployeeTechnology.UpdatedBy = emptechDto.UpdatedBy;
-            existingEmployeeTechnology.UpdatedDate = emptechDto.UpdatedDate;
-
-            await _employeeTechnologyService.Update(existingEmployeeTechnology);
-
-            return Ok(existingEmployeeTechnology);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
             _logger.LogInformation("Deleting employeeTechnology with id: {Id}", id);
-            var success = await _employeeTechnologyService.Delete(id);
+            var success = await _Service.Delete(id);
 
             if (!success)
             {
                 _logger.LogWarning("EmployeeTechnology with id: {Id} not found", id);
                 return NotFound();
             }
-
             return NoContent();
         }
-
     }
 }

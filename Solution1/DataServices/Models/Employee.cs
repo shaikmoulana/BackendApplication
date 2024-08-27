@@ -74,10 +74,10 @@ namespace DataServices.Models
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public string? DesignationId { get; set; }
+        public string? Designation { get; set; }
         public string EmployeeID { get; set; }
         public string EmailId { get; set; }
-        public string? DepartmentId { get; set; }
+        public string? Department { get; set; }
         public string? ReportingTo { get; set; }
         public DateTime? JoiningDate { get; set; }
         public DateTime? RelievingDate { get; set; }

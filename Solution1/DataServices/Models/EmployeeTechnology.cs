@@ -25,7 +25,7 @@ namespace DataServices.Models
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public string? TechnologyId { get; set; }
+        public string? Technology { get; set; }
         public bool IsActive { get; set; } 
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; } 
