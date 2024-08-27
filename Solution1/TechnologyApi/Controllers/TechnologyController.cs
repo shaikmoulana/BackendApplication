@@ -1,13 +1,12 @@
 ﻿using DataServices.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using TechnologyApi.Services;
-
 
 namespace TechnologyApi.Controllers
 {
-    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TechnologyController : ControllerBase
@@ -21,9 +20,8 @@ namespace TechnologyApi.Controllers
             _logger = logger;
         }
 
-        //[Authorize]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Technology>>> GetTechnologies()
+        public async Task<ActionResult<IEnumerable<TechnologyDTO>>> GetTechnologies()
         {
             _logger.LogInformation("Fetching all technologies");
             var technologies = await _technologyService.GetAll();
@@ -31,7 +29,7 @@ namespace TechnologyApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Technology>> GetTechnology(string id)
+        public async Task<ActionResult<TechnologyDTO>> GetTechnology(string id)
         {
             _logger.LogInformation("Fetching technology with id: {Id}", id);
             var technology = await _technologyService.Get(id);
@@ -45,22 +43,8 @@ namespace TechnologyApi.Controllers
             return Ok(technology);
         }
 
-        /*[HttpPost]
-        public async Task<ActionResult<Technology>> CreateTechnology([FromBody] Technology technology)
-        {
-            if (!ModelState.IsValid)
-            {
-                _logger.LogWarning("Invalid model state for creating technology");
-                return BadRequest(ModelState);
-            }
-
-            _logger.LogInformation("Creating a new technology");
-            var createdTechnology = await _technologyService.AddTechnology(technology);
-            return CreatedAtAction(nameof(GetTechnology), new { id = createdTechnology.Id }, createdTechnology);
-        }*/
-
         [HttpPost]
-        public async Task<ActionResult<Technology>> Create([FromBody] TechnologiesDTO techDto)
+        public async Task<ActionResult<TechnologyDTO>> Create([FromBody] TechnologyDTO techDto)
         {
             if (!ModelState.IsValid)
             {
@@ -69,80 +53,57 @@ namespace TechnologyApi.Controllers
             }
 
             _logger.LogInformation("Creating a new technology");
-            var technology = new Technology
-            {
-                Name = techDto.Name,
-                DepartmentId = techDto.DepartmentId,
-                IsActive = techDto.IsActive,
-                CreatedBy = techDto.CreatedBy,
-                CreatedDate = techDto.CreatedDate,
-                UpdatedBy = techDto.UpdatedBy,
-                UpdatedDate = techDto.UpdatedDate
-            };
 
-            var createdTechnology = await _technologyService.Add(technology);
-            return CreatedAtAction(nameof(GetTechnology), new { id = createdTechnology.Id }, createdTechnology);
+            try
+            {
+                var createdTechnology = await _technologyService.Add(techDto);
+                return CreatedAtAction(nameof(GetTechnology), new { id = createdTechnology.Id }, createdTechnology);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
-
-        /*[HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTechnology(string id, [FromBody] Technology technology)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTechnology(string id, [FromBody] TechnologyDTO techDto)
         {
-            if (id != technology.Id)
+            if (id != techDto.Id)
             {
-                _logger.LogWarning("Technology id: {Id} does not match with the id in the request body", id);
-                return BadRequest();
+                _logger.LogWarning("Technology id mismatch");
+                return BadRequest("Technology ID mismatch");
             }
 
-            _logger.LogInformation("Updating technology with id: {Id}", id);
-            await _technologyService.UpdateTechnology(technology);
-
-            return NoContent();
-        }*/
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTechnology(string id, [FromBody] TechnologiesDTO techDto)
-        {
             if (!ModelState.IsValid)
             {
                 _logger.LogWarning("Invalid model state for updating technology");
                 return BadRequest(ModelState);
             }
 
-            if (id != techDto.Id)
-            {
-                _logger.LogWarning("Technology id: {Id} does not match with the id in the request body", id);
-                return BadRequest("Technology ID mismatch.");
-            }
-
-            var existingTechnology = await _technologyService.Get(id);
-            if (existingTechnology == null)
-            {
-                _logger.LogWarning("Technology with id: {Id} not found", id);
-                return NotFound();
-            }
-
             _logger.LogInformation("Updating technology with id: {Id}", id);
 
-            // Update properties from DTO
-            existingTechnology.Name = techDto.Name;
-            existingTechnology.DepartmentId = techDto.DepartmentId;
-            existingTechnology.IsActive = techDto.IsActive;
-            existingTechnology.UpdatedBy = techDto.UpdatedBy;
-            existingTechnology.UpdatedDate = techDto.UpdatedDate;
+            try
+            {
+                await _technologyService.Update(techDto);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return NotFound(ex.Message);
+            }
 
-            await _technologyService.Update(existingTechnology);
-
-            return Ok(existingTechnology);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTechnology(string id)
         {
             _logger.LogInformation("Deleting technology with id: {Id}", id);
-            var success = await _technologyService.Delete(id);
 
-            if (!success)
+            var result = await _technologyService.Delete(id);
+
+            if (!result)
             {
                 _logger.LogWarning("Technology with id: {Id} not found", id);
                 return NotFound();

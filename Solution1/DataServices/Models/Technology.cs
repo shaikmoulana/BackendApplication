@@ -36,15 +36,14 @@ namespace DataServices.Models
         [ForeignKey("DepartmentId")]
         public Department Department { get; set; }
     }
-    public class TechnologiesDTO
+    public class TechnologyDTO
     {
         public string Id { get; set; }
 
         [Required(ErrorMessage = "The Name field is required.")]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = "The DepartmentId field is required.")]
-        public string? DepartmentId { get; set; }
+        public string? Department { get; set; }
 
         public bool IsActive { get; set; }
         public string CreatedBy { get; set; }

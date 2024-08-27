@@ -8,7 +8,6 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 using TechnologyApi.Services;
-using TechnologyService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +16,7 @@ builder.Services.AddDbContext<DataBaseContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("sqlcon")));
 
 builder.Services.AddScoped<IRepository<Technology>, TechnologyRepository>();
-builder.Services.AddScoped<ITechnologyService,TechnologyServices>();
+builder.Services.AddScoped<ITechnologyService,TechnologyService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

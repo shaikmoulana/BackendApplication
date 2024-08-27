@@ -1,49 +1,125 @@
-﻿using DataServices.Models;
-using DataServices.Repositories;
-using TechnologyApi.Services;
+﻿using DataServices.Data;
+using DataServices.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace TechnologyService.Services
+namespace TechnologyApi.Services
 {
-    public class TechnologyServices : ITechnologyService
+    public class TechnologyService : ITechnologyService
     {
-        private readonly IRepository<Technology> _repository;
+        private readonly DataBaseContext _context;
 
-        public TechnologyServices(IRepository<Technology> repository)
+        public TechnologyService(DataBaseContext context)
         {
-            _repository = repository;
+            _context = context;
         }
 
-        public async Task<IEnumerable<Technology>> GetAll()
+        public async Task<IEnumerable<TechnologyDTO>> GetAll()
         {
-            return await _repository.GetAll();
+            var technologies = await _context.TblTechnology.Include(t => t.Department).ToListAsync();
+            var techDtos = new List<TechnologyDTO>();
+
+            foreach (var tech in technologies)
+            {
+                techDtos.Add(new TechnologyDTO
+                {
+                    Id = tech.Id,
+                    Name = tech.Name,
+                    Department = tech.Department?.Name,
+                    IsActive = tech.IsActive,
+                    CreatedBy = tech.CreatedBy,
+                    CreatedDate = tech.CreatedDate,
+                    UpdatedBy = tech.UpdatedBy,
+                    UpdatedDate = tech.UpdatedDate
+                });
+            }
+
+            return techDtos;
         }
 
-        public async Task<Technology> Get(string id)
+        public async Task<TechnologyDTO> Get(string id)
         {
-            return await _repository.Get(id);
+            var technology = await _context.TblTechnology
+                .Include(t => t.Department)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (technology == null)
+                return null;
+
+            return new TechnologyDTO
+            {
+                Id = technology.Id,
+                Name = technology.Name,
+                Department = technology.Department?.Name,
+                IsActive = technology.IsActive,
+                CreatedBy = technology.CreatedBy,
+                CreatedDate = technology.CreatedDate,
+                UpdatedBy = technology.UpdatedBy,
+                UpdatedDate = technology.UpdatedDate
+            };
         }
 
-        public async Task<Technology> Add(Technology technology)
+        public async Task<TechnologyDTO> Add(TechnologyDTO technologyDto)
         {
-            return await _repository.Create(technology);
+            var department = await _context.TblDepartment
+                .FirstOrDefaultAsync(d => d.Name == technologyDto.Department);
+
+            if (department == null)
+                throw new KeyNotFoundException("Department not found");
+
+            var technology = new Technology
+            {
+                Name = technologyDto.Name,
+                DepartmentId = department.Id,
+                IsActive = technologyDto.IsActive,
+                CreatedBy = technologyDto.CreatedBy,
+                CreatedDate = technologyDto.CreatedDate,
+                UpdatedBy = technologyDto.UpdatedBy,
+                UpdatedDate = technologyDto.UpdatedDate
+            };
+
+            _context.TblTechnology.Add(technology);
+            await _context.SaveChangesAsync();
+
+            technologyDto.Id = technology.Id;
+            return technologyDto;
         }
 
-        public async Task<Technology> Update(Technology technology)
+        public async Task<TechnologyDTO> Update(TechnologyDTO technologyDto)
         {
-           return await _repository.Update(technology);
+            var technology = await _context.TblTechnology.FindAsync(technologyDto.Id);
+
+            if (technology == null)
+                throw new KeyNotFoundException("Technology not found");
+
+            var department = await _context.TblDepartment
+                .FirstOrDefaultAsync(d => d.Name == technologyDto.Department);
+
+            if (department == null)
+                throw new KeyNotFoundException("Department not found");
+
+            technology.Name = technologyDto.Name;
+            technology.DepartmentId = department.Id;
+            technology.IsActive = technologyDto.IsActive;
+            technology.UpdatedBy = technologyDto.UpdatedBy;
+            technology.UpdatedDate = technologyDto.UpdatedDate;
+
+            _context.Entry(technology).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return technologyDto;
         }
 
         public async Task<bool> Delete(string id)
         {
-            // Check if the technology exists
-            var existingTechnology = await _repository.Get(id);
-            if (existingTechnology == null)
-            {
-                throw new ArgumentException($"Technology with ID {id} not found.");
-            }
+            var technology = await _context.TblTechnology.FindAsync(id);
+            if (technology == null)
+                return false;
 
-            // Call repository to delete the technology
-            return await _repository.Delete(id);
+            _context.TblTechnology.Remove(technology);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }
