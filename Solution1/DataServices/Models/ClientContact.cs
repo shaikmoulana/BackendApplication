@@ -32,7 +32,7 @@ namespace DataServices.Models
     public class ClientContactDTO
     {
         public string Id { get; set; }
-        public string ClientId { get; set; }
+        public string Client { get; set; }
 
         public string? ContactValue { get; set; }
 

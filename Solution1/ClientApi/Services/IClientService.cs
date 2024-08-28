@@ -4,10 +4,10 @@ namespace ClientServices.Services
 {
     public interface IClientService
     {
-        public Task<IEnumerable<Client>> GetAll();
-        public Task<Client> Get(string id);
-        public Task<Client> Add(Client client);
-        public Task<Client> Update(Client client);
+        public Task<IEnumerable<ClientDTO>> GetAll();
+        public Task<ClientDTO> Get(string id);
+        public Task<ClientDTO> Add(ClientDTO client);
+        public Task<ClientDTO> Update(ClientDTO client);
         public Task<bool> Delete(string id);
 
     }
