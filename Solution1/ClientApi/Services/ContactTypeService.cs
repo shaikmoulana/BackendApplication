@@ -31,22 +31,6 @@ namespace ClientApi.Services
 
         public async Task<ContactType> Update(ContactType _object)
         {
-            // Retrieve the existing technology from the database
-            /*var existingData = await _repository.Get(_object.Id);
-            if (existingData == null)
-            {
-                throw new ArgumentException($"ClientContact with ID {_object.Id} not found.");
-            }
-
-            // Update properties with the new values
-            existingData.TypeName = _object.TypeName;
-            existingData.IsActive = true;
-            existingData.CreatedBy = "SYSTEM";
-            existingData.CreatedDate = DateTime.Now;
-            existingData.UpdatedBy = _object.UpdatedBy;
-            existingData.UpdatedDate = _object.UpdatedDate;
-            // Call repository to update the technology
-            return await _repository.Update(existingData);*/
             return await _repository.Update(_object);
         }
 
