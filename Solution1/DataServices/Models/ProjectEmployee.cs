@@ -59,8 +59,8 @@ namespace DataServices.Models
     {
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string? Project { get; set; }
-        public string? Employee { get; set; }
+        public string? ProjectId { get; set; }
+        public string? EmployeeId { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public bool IsActive { get; set; }
@@ -69,8 +69,8 @@ namespace DataServices.Models
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
 
-        public Project? ProjectId { get; set; }
-        public Employee? EmployeeId { get; set; }
+        public Project? Project { get; set; }
+        public Employee? Employee { get; set; }
     }
 
     public class ProjectEmployeeDTO

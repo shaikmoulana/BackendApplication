@@ -22,7 +22,6 @@ namespace DataServices.Models
         public DateTime CreatedDate { get; set; }
         public string ?UpdatedBy { get; set; }
         public DateTime ?UpdatedDate { get; set; }
-        public ICollection<ProjectTechnology> ProjectTechnologies { get; set; }
         public ICollection<ClientContact> ClientContact { get; set; }
         public ICollection<SOW> SOW { get; set; }
         public ICollection<Project> Project { get; set; }

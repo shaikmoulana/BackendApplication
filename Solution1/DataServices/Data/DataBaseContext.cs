@@ -229,26 +229,26 @@ namespace DataServices.Data
             //Foreign key relation for ProjectTechnology model class
 
             modelBuilder.Entity<ProjectEmployee>()
-               .HasOne(c => c.ProjectId)
+               .HasOne(c => c.Project)
                .WithMany(c => c.ProjectEmployees)
-               .HasForeignKey(c => c.Project);
+               .HasForeignKey(c => c.ProjectId);
 
             modelBuilder.Entity<ProjectEmployee>()
-                .HasOne(c => c.EmployeeId)
+                .HasOne(c => c.Employee)
                 .WithMany(c => c.ProjectEmployees)
-                .HasForeignKey(c => c.Employee);
+                .HasForeignKey(c => c.EmployeeId);
 
             //Foreign key relation for ProjectTechnology model class
 
             modelBuilder.Entity<ProjectTechnology>()
-               .HasOne(c => c.ClientId)
+               .HasOne(c => c.Project)
                .WithMany(c => c.ProjectTechnologies)
-               .HasForeignKey(c => c.Project);
+               .HasForeignKey(c => c.ProjectId);
 
             modelBuilder.Entity<ProjectTechnology>()
-                .HasOne(c => c.TechnologyId)
+                .HasOne(c => c.Technology)
                 .WithMany(c => c.ProjectTechnologies)
-                .HasForeignKey(c => c.Technology);
+                .HasForeignKey(c => c.TechnologyId);
 
         }
 

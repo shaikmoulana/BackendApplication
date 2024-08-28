@@ -1,54 +1,139 @@
-﻿using DataServices.Models;
+﻿using DataServices.Data;
+using DataServices.Models;
 using DataServices.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProjectApi.Services
 {
     public class ProjectEmployeeService : IProjectEmployeeService
     {
         private readonly IRepository<ProjectEmployee> _repository;
+        private readonly DataBaseContext _context;
 
-        public ProjectEmployeeService(IRepository<ProjectEmployee> repository)
+        public ProjectEmployeeService(IRepository<ProjectEmployee> repository, DataBaseContext context)
         {
             _repository = repository;
+            _context = context;
         }
 
-        public async Task<IEnumerable<ProjectEmployee>> GetAll()
+        public async Task<IEnumerable<ProjectEmployeeDTO>> GetAll()
         {
-            return await _repository.GetAll();
-        }
+            var projectEmployee = await _context.TblProjectEmployee
+                .Include(p => p.Project)
+                .Include(p => p.Employee)
+                .ToListAsync();
 
-        public async Task<ProjectEmployee> Get(string id)
-        {
-            return await _repository.Get(id);
-        }
+            var projectEmployeeDtos = new List<ProjectEmployeeDTO>();
 
-        public async Task<ProjectEmployee> Add(ProjectEmployee _object)
-        {
-            return await _repository.Create(_object);
-        }
-
-        public async Task<ProjectEmployee> Update(ProjectEmployee _object)
-        {
-            // Retrieve the existing technology from the database
-            /*var existingData = await _repository.Get(_object.Id);
-            if (existingData == null)
+            foreach (var item in projectEmployee)
             {
-                throw new ArgumentException($" with ID {_object.Id} not found.");
+                projectEmployeeDtos.Add(new ProjectEmployeeDTO()
+                {
+                    Id = item.Id,
+                    Project = item.Project?.ProjectName,
+                    Employee = item.Employee?.Name,
+                    StartDate = item.StartDate,
+                    EndDate = item.EndDate,
+                    IsActive = item.IsActive,
+                    CreatedBy = item.CreatedBy,
+                    CreatedDate = item.CreatedDate,
+                    UpdatedBy = item.UpdatedBy,
+                    UpdatedDate = item.UpdatedDate
+                });
             }
+            return projectEmployeeDtos;
+        }
 
-            // Update properties with the new values
-            existingData.Project = _object.Project;
-            existingData.Employee = _object.Employee;
-            existingData.StartDate = _object.StartDate;
-            existingData.EndDate = _object.EndDate;
-            existingData.IsActive = true;
-            existingData.CreatedBy = "SYSTEM";
-            existingData.CreatedDate = DateTime.Now;
-            existingData.UpdatedBy = _object.UpdatedBy;
-            existingData.UpdatedDate = _object.UpdatedDate;
-            // Call repository to update the technology
-            return await _repository.Update(existingData);*/
-            return await _repository.Update(_object);
+        public async Task<ProjectEmployeeDTO> Get(string id)
+        {
+            var projectEmployee = await _context.TblProjectEmployee
+                .Include(p => p.Project)
+                .Include(p => p.Employee)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (projectEmployee == null) return null;
+
+            return new ProjectEmployeeDTO
+            {
+                Id = projectEmployee.Id,
+                Project = projectEmployee.Project?.ProjectName,
+                Employee = projectEmployee.Employee?.Name,
+                StartDate = projectEmployee.StartDate,
+                EndDate = projectEmployee.EndDate,
+                IsActive = projectEmployee.IsActive,
+                CreatedBy = projectEmployee.CreatedBy,
+                CreatedDate = projectEmployee.CreatedDate,
+                UpdatedBy = projectEmployee.UpdatedBy,
+                UpdatedDate = projectEmployee.UpdatedDate
+            };
+        }
+
+        public async Task<ProjectEmployeeDTO> Add(ProjectEmployeeDTO _object)
+        {
+            var project = await _context.TblProject
+               .FirstOrDefaultAsync(d => d.ProjectName == _object.Project);
+
+            if (project == null)
+                throw new KeyNotFoundException("Project not found");
+
+            var employee = await _context.TblEmployee
+               .FirstOrDefaultAsync(d => d.Name == _object.Employee);
+
+            if (employee == null)
+                throw new KeyNotFoundException("Employee not found");
+
+            var projectEmployee = new ProjectEmployee
+            {
+                ProjectId = project?.Id,
+                EmployeeId = employee?.Id,
+                StartDate = _object.StartDate,
+                EndDate = _object.EndDate,
+                IsActive = _object.IsActive,
+                CreatedBy = _object.CreatedBy,
+                CreatedDate = _object.CreatedDate,
+                UpdatedBy = _object.UpdatedBy,
+                UpdatedDate = _object.UpdatedDate
+            };
+
+            _context.TblProjectEmployee.Add(projectEmployee);
+            await _context.SaveChangesAsync();
+
+            _object.Id = projectEmployee.Id;
+            return _object;
+        }
+
+        public async Task<ProjectEmployeeDTO> Update(ProjectEmployeeDTO _object)
+        {
+            var projectEmployee = await _context.TblProjectEmployee.FindAsync(_object.Id);
+
+            if (projectEmployee == null)
+                throw new KeyNotFoundException("ProjectEmployee not found");
+
+            var project = await _context.TblProject
+              .FirstOrDefaultAsync(d => d.ProjectName == _object.Project);
+
+            if (project == null)
+                throw new KeyNotFoundException("Project not found");
+
+            var employee = await _context.TblEmployee
+                .FirstOrDefaultAsync(d => d.Name == _object.Employee);
+
+            if (employee == null)
+                throw new KeyNotFoundException("employee not found");
+
+
+            projectEmployee.ProjectId = project?.Id;
+            projectEmployee.EmployeeId = employee?.Id;
+            projectEmployee.IsActive = _object.IsActive;
+            projectEmployee.CreatedBy = _object.CreatedBy;
+            projectEmployee.CreatedDate = _object.CreatedDate;
+            projectEmployee.UpdatedBy = _object.UpdatedBy;
+            projectEmployee.UpdatedDate = _object.UpdatedDate;
+
+            _context.Entry(projectEmployee).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return _object;
         }
 
         public async Task<bool> Delete(string id)

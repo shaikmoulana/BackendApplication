@@ -98,11 +98,12 @@ namespace DataServices.Models
         public Employee? PMOId { get; set; }
 
         public ICollection<ProjectEmployee>? ProjectEmployees { get; set; }
+        public ICollection<ProjectTechnology>? ProjectTechnologies { get; set; }
     }
     public class ProjectDTO
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string ClientId { get; set; }
+        public string Client { get; set; }
         public string? ProjectName { get; set; }
         public string? TechnicalProjectManager { get; set; }
         public string? SalesContact { get; set; }

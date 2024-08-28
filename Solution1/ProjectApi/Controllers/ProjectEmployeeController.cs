@@ -19,7 +19,7 @@ namespace ProjectApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProjectEmployee>>> GetAll()
+        public async Task<ActionResult<IEnumerable<ProjectEmployeeDTO>>> GetAll()
         {
             _logger.LogInformation("Fetching all");
             var data = await _Service.GetAll();
@@ -27,7 +27,7 @@ namespace ProjectApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProjectEmployee>> Get(string id)
+        public async Task<ActionResult<ProjectEmployeeDTO>> Get(string id)
         {
             _logger.LogInformation("Fetching with id: {Id}", id);
             var data = await _Service.Get(id);
@@ -43,7 +43,7 @@ namespace ProjectApi.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<ProjectEmployee>> Add([FromBody] ProjectEmployeeDTO _object)
+        public async Task<ActionResult<ProjectEmployeeDTO>> Add([FromBody] ProjectEmployeeDTO _object)
         {
             if (!ModelState.IsValid)
             {
@@ -52,21 +52,17 @@ namespace ProjectApi.Controllers
             }
 
             _logger.LogInformation("Creating a new");
-            var data = new ProjectEmployee
+            try
             {
-                Project = _object.Project,
-                Employee = _object.Employee,
-                StartDate= _object.StartDate,
-                EndDate= _object.EndDate,
-                IsActive = _object.IsActive,
-                CreatedBy = _object.CreatedBy,
-                CreatedDate = _object.CreatedDate,
-                UpdatedBy = _object.UpdatedBy,
-                UpdatedDate = _object.UpdatedDate
-            };
+                var created = await _Service.Add(_object);
+                return CreatedAtAction(nameof(GetAll), new { id = created.Id }, created);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest(ex.Message);
+            }
 
-            var created = await _Service.Add(data);
-            return CreatedAtAction(nameof(GetAll), new { id = created.Id }, created);
         }
 
 
@@ -85,27 +81,19 @@ namespace ProjectApi.Controllers
                 return BadRequest("ID mismatch.");
             }
 
-            var existingData = await _Service.Get(id);
-            if (existingData == null)
-            {
-                _logger.LogWarning("with id: {Id} not found", id);
-                return NotFound();
-            }
-
             _logger.LogInformation("Updating  with id: {Id}", id);
 
-            // Update properties from DTO
-            existingData.Project = _object.Project;
-            existingData.Employee = _object.Employee;
-            existingData.StartDate = _object.StartDate;
-            existingData.EndDate= _object.EndDate;
-            existingData.IsActive = _object.IsActive;
-            existingData.UpdatedBy = _object.UpdatedBy;
-            existingData.UpdatedDate = _object.UpdatedDate;
+            try
+            {
+                await _Service.Update(_object);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest(ex.Message);
+            }
 
-            await _Service.Update(existingData);
-
-            return Ok(existingData);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]

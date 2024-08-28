@@ -2,6 +2,7 @@
 using ProjectApi.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ProjectApi.Controllers
 {
@@ -19,7 +20,7 @@ namespace ProjectApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Project>>> GetAll()
+        public async Task<ActionResult<IEnumerable<ProjectDTO>>> GetAll()
         {
             _logger.LogInformation("Fetching all");
             var data = await _Service.GetAll();
@@ -27,7 +28,7 @@ namespace ProjectApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Project>> Get(string id)
+        public async Task<ActionResult<ProjectDTO>> Get(string id)
         {
             _logger.LogInformation("Fetching with id: {Id}", id);
             var data = await _Service.Get(id);
@@ -43,7 +44,7 @@ namespace ProjectApi.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<Project>> Add([FromBody] ProjectDTO _object)
+        public async Task<ActionResult<ProjectDTO>> Add([FromBody] ProjectDTO _object)
         {
             if (!ModelState.IsValid)
             {
@@ -52,26 +53,18 @@ namespace ProjectApi.Controllers
             }
 
             _logger.LogInformation("Creating a new");
-            var data = new Project
-            {
-                ClientId = _object.ClientId,
-                ProjectName=_object.ProjectName,
-                TechnicalProjectManager = _object.TechnicalProjectManager,
-                SalesContact=_object.SalesContact,
-                PMO= _object.PMO,
-                SOWSubmittedDate=_object.SOWSubmittedDate,
-                SOWSignedDate=_object.SOWSignedDate,
-                SOWValidTill=_object.SOWValidTill,
-                SOWLastExtendedDate=_object.SOWLastExtendedDate,
-                IsActive = _object.IsActive,
-                CreatedBy = _object.CreatedBy,
-                CreatedDate = _object.CreatedDate,
-                UpdatedBy = _object.UpdatedBy,
-                UpdatedDate = _object.UpdatedDate
-            };
 
-            var created = await _Service.Add(data);
-            return CreatedAtAction(nameof(GetAll), new { id = created.Id }, created);
+            try
+            {
+                var created = await _Service.Add(_object);
+                return CreatedAtAction(nameof(GetAll), new { id = created.Id }, created);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest(ex.Message);
+            }
+
         }
 
 
@@ -90,32 +83,16 @@ namespace ProjectApi.Controllers
                 return BadRequest("ID mismatch.");
             }
 
-            var existingData = await _Service.Get(id);
-            if (existingData == null)
+            try
             {
-                _logger.LogWarning("with id: {Id} not found", id);
-                return NotFound();
+                await _Service.Update(_object);
             }
-
-            _logger.LogInformation("Updating  with id: {Id}", id);
-
-            // Update properties from DTO
-            existingData.ClientId = _object.ClientId;
-            existingData.ProjectName = _object.ProjectName;
-            existingData.TechnicalProjectManager = _object.TechnicalProjectManager;
-            existingData.SalesContact= _object.SalesContact;
-            existingData.PMO= _object.PMO;
-            existingData.SOWSubmittedDate= _object.SOWSubmittedDate;
-            existingData.SOWSignedDate= _object.SOWSignedDate;
-            existingData.SOWValidTill= _object.SOWValidTill;
-            existingData.SOWLastExtendedDate= _object.SOWLastExtendedDate;
-            existingData.IsActive = _object.IsActive;
-            existingData.UpdatedBy = _object.UpdatedBy;
-            existingData.UpdatedDate = _object.UpdatedDate;
-
-            await _Service.Update(existingData);
-
-            return Ok(existingData);
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
