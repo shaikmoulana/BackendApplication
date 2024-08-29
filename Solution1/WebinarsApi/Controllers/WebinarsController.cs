@@ -19,7 +19,7 @@ namespace WebinarsApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Webinars>>> GetAll()
+        public async Task<ActionResult<IEnumerable<WebinarsDTO>>> GetAll()
         {
             _logger.LogInformation("Fetching all");
             var data = await _Service.GetAll();
@@ -27,7 +27,7 @@ namespace WebinarsApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Webinars>> Get(string id)
+        public async Task<ActionResult<WebinarsDTO>> Get(string id)
         {
             _logger.LogInformation("Fetching with id: {Id}", id);
             var data = await _Service.Get(id);
@@ -43,7 +43,7 @@ namespace WebinarsApi.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<Webinars>> Add([FromBody] WebinarsDTO _object)
+        public async Task<ActionResult<WebinarsDTO>> Add([FromBody] WebinarsDTO _object)
         {
             if (!ModelState.IsValid)
             {
@@ -52,22 +52,18 @@ namespace WebinarsApi.Controllers
             }
 
             _logger.LogInformation("Creating a new");
-            var data = new Webinars
-            {
-                Title = _object.Title,
-                Speaker = _object.Speaker,
-                Status = _object.Status,
-                WebinarDate = _object.WebinarDate,
-                NumberOfAudience = _object.NumberOfAudience,
-                IsActive = _object.IsActive,
-                CreatedBy = _object.CreatedBy,
-                CreatedDate = _object.CreatedDate,
-                UpdatedBy = _object.UpdatedBy,
-                UpdatedDate = _object.UpdatedDate
-            };
 
-            var created = await _Service.Add(data);
-            return CreatedAtAction(nameof(GetAll), new { id = created.Id }, created);
+            try
+            {
+                var created = await _Service.Add(_object);
+                return CreatedAtAction(nameof(GetAll), new { id = created.Id }, created);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest(ex.Message);
+            }
+
         }
 
 
@@ -86,28 +82,20 @@ namespace WebinarsApi.Controllers
                 return BadRequest("ID mismatch.");
             }
 
-            var existingData = await _Service.Get(id);
-            if (existingData == null)
-            {
-                _logger.LogWarning("with id: {Id} not found", id);
-                return NotFound();
-            }
-
             _logger.LogInformation("Updating  with id: {Id}", id);
 
-            // Update properties from DTO
-            existingData.Title = _object.Title;
-            existingData.Speaker = _object.Speaker;
-            existingData.Status = _object.Status;
-            existingData.WebinarDate = _object.WebinarDate;
-            existingData.NumberOfAudience = _object.NumberOfAudience;
-            existingData.IsActive = _object.IsActive;
-            existingData.UpdatedBy = _object.UpdatedBy;
-            existingData.UpdatedDate = _object.UpdatedDate;
+            try
+            {
+                await _Service.Update(_object);
 
-            await _Service.Update(existingData);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            return NoContent();
 
-            return Ok(existingData);
         }
 
         [HttpDelete("{id}")]
