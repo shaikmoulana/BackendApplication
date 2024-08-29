@@ -140,12 +140,12 @@ namespace DataServices.Data
             modelBuilder.Entity<SOW>()
                         .HasOne(pt => pt.Clients)
                         .WithMany(c => c.SOW)
-                        .HasForeignKey(pt => pt.Client);
+                        .HasForeignKey(pt => pt.ClientId);
 
             modelBuilder.Entity<SOW>()
-                        .HasOne(pt => pt.Employee)
+                        .HasOne(pt => pt.Project)
                         .WithMany(c => c.SOW)
-                        .HasForeignKey(pt => pt.Project);
+                        .HasForeignKey(pt => pt.ProjectId);
 
             modelBuilder.Entity<SOW>()
                         .HasOne(pt => pt.SOWStatus)
@@ -158,16 +158,21 @@ namespace DataServices.Data
                         .WithMany(c => c.SOWRequirement)
                         .HasForeignKey(pt => pt.SOW);
 
+            modelBuilder.Entity<SOWRequirement>()
+                        .HasOne(pt => pt.Designation)
+                        .WithMany(c => c.SOWRequirement)
+                        .HasForeignKey(pt => pt.DesignationId);
+
             //----------15th SOWPropsedTeam table------------------------------------
             modelBuilder.Entity<SOWProposedTeam>()
                         .HasOne(pt => pt.SOWRequirements)
                         .WithMany(c => c.SOWProposedTeam)
-                        .HasForeignKey(pt => pt.SOWRequirement);
+                        .HasForeignKey(pt => pt.SOWRequirementId);
 
             modelBuilder.Entity<SOWProposedTeam>()
                         .HasOne(pt => pt.Employees)
                         .WithMany(c => c.SOWProposedTeam)
-                        .HasForeignKey(pt => pt.Employee);
+                        .HasForeignKey(pt => pt.EmployeeId);
 
 
 

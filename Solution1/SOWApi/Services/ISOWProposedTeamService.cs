@@ -4,10 +4,10 @@ namespace SOWApi.Services
 {
     public interface ISOWProposedTeamService
     {
-        Task<IEnumerable<SOWProposedTeam>> GetAll();
-        Task<SOWProposedTeam> Get(string id);
-        Task<SOWProposedTeam> Add(SOWProposedTeam sowproposedteam);
-        Task<SOWProposedTeam> Update(SOWProposedTeam sowproposedteam);
+        Task<IEnumerable<SOWProposedTeamDTO>> GetAll();
+        Task<SOWProposedTeamDTO> Get(string id);
+        Task<SOWProposedTeamDTO> Add(SOWProposedTeamDTO sowproposedteam);
+        Task<SOWProposedTeamDTO> Update(SOWProposedTeamDTO sowproposedteam);
         Task<bool> Delete(string id);
     }
 }

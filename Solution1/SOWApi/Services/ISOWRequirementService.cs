@@ -4,10 +4,10 @@ namespace SOWApi.Services
 {
     public interface ISOWRequirementService
     {
-        Task<IEnumerable<SOWRequirement>> GetAll();
-        Task<SOWRequirement> Get(string id);
-        Task<SOWRequirement> Add(SOWRequirement sowrequirement);
-        Task<SOWRequirement> Update(SOWRequirement sowrequirement);
+        Task<IEnumerable<SOWRequirementDTO>> GetAll();
+        Task<SOWRequirementDTO> Get(string id);
+        Task<SOWRequirementDTO> Add(SOWRequirementDTO sowrequirement);
+        Task<SOWRequirementDTO> Update(SOWRequirementDTO sowrequirement);
         Task<bool> Delete(string id);
     }
 }

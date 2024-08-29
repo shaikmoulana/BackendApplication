@@ -62,7 +62,6 @@ namespace DataServices.Models
         public ICollection<Client> Client { get; set; }
         public ICollection<Interviews> Interviews { get; set; }
         public ICollection<ProjectEmployee> ProjectEmployees { get; set; }
-        public ICollection<SOW> SOW { get; set; }
         public ICollection<SOWProposedTeam> SOWProposedTeam { get; set; }
         public ICollection<Webinars> Webinars { get; set; }
         public ICollection<Project> TechnicalProjectManagerId { get; set; }

@@ -96,7 +96,7 @@ namespace DataServices.Models
         public Employee? TechnicalProjectManagerId { get; set; }
         public Employee? SalesContactId { get; set; }
         public Employee? PMOId { get; set; }
-
+        public ICollection<SOW> SOW { get; set; }
         public ICollection<ProjectEmployee>? ProjectEmployees { get; set; }
         public ICollection<ProjectTechnology>? ProjectTechnologies { get; set; }
     }

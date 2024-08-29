@@ -4,10 +4,10 @@ namespace SOWApi.Services
 {
     public interface ISOWService
     {
-        Task<IEnumerable<SOW>> GetAll();
-        Task<SOW> Get(string id);
-        Task<SOW> Add(SOW sow);
-        Task<SOW> Update(SOW sow);
+        Task<IEnumerable<SOWDTO>> GetAll();
+        Task<SOWDTO> Get(string id);
+        Task<SOWDTO> Add(SOWDTO sow);
+        Task<SOWDTO> Update(SOWDTO sow);
         Task<bool> Delete(string id);
     }
 }

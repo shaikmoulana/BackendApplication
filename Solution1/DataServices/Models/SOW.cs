@@ -11,8 +11,8 @@ namespace DataServices.Models
     public class SOW
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string? Client { get; set; }
-        public string? Project { get; set; }
+        public string? ClientId { get; set; }
+        public string? ProjectId { get; set; }
         public DateTime? PreparedDate { get; set; }
         public DateTime? SubmittedDate { get; set; }
         public string? Status { get; set; }
@@ -22,10 +22,10 @@ namespace DataServices.Models
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        [ForeignKey("Client")]
+        [ForeignKey("ClientId")]
         public Client Clients { get; set; }
-        [ForeignKey("Project")]
-        public Employee Employee { get; set; }
+        [ForeignKey("ProjectId")]
+        public Project Project { get; set; }
         [ForeignKey("Status")]
         public SOWStatus SOWStatus { get; set; }
         public ICollection<SOWRequirement> SOWRequirement { get; set; }

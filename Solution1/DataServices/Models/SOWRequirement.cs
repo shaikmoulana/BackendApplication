@@ -12,7 +12,7 @@ namespace DataServices.Models
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string? SOW { get; set; }
-        public string? Designation { get; set; }
+        public string? DesignationId { get; set; }
         public string? Technologies { get; set; }
         public int? TeamSize { get; set; }
         public bool IsActive { get; set; } = true;
@@ -24,6 +24,8 @@ namespace DataServices.Models
         public ICollection<SOWProposedTeam> SOWProposedTeam { get; set; }
         [ForeignKey("SOW")]
         public SOW SOWs { get; set; }
+        [ForeignKey("DesignationId")]
+        public Designation Designation { get; set; }
 
     }
 

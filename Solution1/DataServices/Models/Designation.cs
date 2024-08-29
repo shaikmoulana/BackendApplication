@@ -27,6 +27,7 @@ namespace DataServices.Models
 
         public DateTime? UpdatedDate { get; set; }
         public ICollection<Employee> Employee { get; set; }
+        public ICollection<SOWRequirement> SOWRequirement { get; set; }
 
     }
 

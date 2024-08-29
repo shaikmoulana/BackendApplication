@@ -12,9 +12,9 @@ namespace DataServices.Models
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
-        public string? SOWRequirement { get; set; }
+        public string? SOWRequirementId { get; set; }
 
-        public string? Employee { get; set; }
+        public string? EmployeeId { get; set; }
 
         public bool IsActive { get; set; } = true;
 
@@ -25,9 +25,9 @@ namespace DataServices.Models
         public string? UpdatedBy { get; set; }
 
         public DateTime? UpdatedDate { get; set; }
-        [ForeignKey("SOWRequirement")]
+        [ForeignKey("SOWRequirementId")]
         public SOWRequirement SOWRequirements { get; set; }
-        [ForeignKey("Employee")]
+        [ForeignKey("EmployeeId")]
         public Employee Employees { get; set; }
     }
 
