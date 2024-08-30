@@ -180,17 +180,17 @@ namespace DataServices.Data
             modelBuilder.Entity<Interviews>()
                         .HasOne(pt => pt.SOWRequirements)
                         .WithMany(c => c.Interviews)
-                        .HasForeignKey(pt => pt.SOWRequirement);
+                        .HasForeignKey(pt => pt.SOWRequirementId);
 
             modelBuilder.Entity<Interviews>()
-                                    .HasOne(pt => pt.Recruiters)
+                                    .HasOne(pt => pt.Employee)
                                     .WithMany(c => c.Interviews)
                                     .HasForeignKey(pt => pt.Recruiter);
 
             modelBuilder.Entity<Interviews>()
-                                    .HasOne(pt => pt.Statuses)
+                                    .HasOne(pt => pt.InterviewStatus)
                                     .WithMany(c => c.Interviews)
-                                    .HasForeignKey(pt => pt.Status);
+                                    .HasForeignKey(pt => pt.StatusId);
 
 
             //----------18th Webinars table------------------------------------

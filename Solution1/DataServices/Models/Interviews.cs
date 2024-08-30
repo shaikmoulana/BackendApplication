@@ -11,11 +11,11 @@ namespace DataServices.Models
     public class Interviews
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string? SOWRequirement { get; set; }
+        public string? SOWRequirementId { get; set; }
         public string? Name { get; set; }
         public DateTime? InterviewDate { get; set; }
         public int? YearsOfExperience { get; set; }
-        public string? Status { get; set; }
+        public string? StatusId { get; set; }
         public DateTime? On_Boarding { get; set; }
         public string? Recruiter { get; set; }
         public bool IsActive { get; set; } = true;
@@ -24,14 +24,14 @@ namespace DataServices.Models
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
 
-        [ForeignKey("SOWRequirement")]
+        [ForeignKey("SOWRequirementId")]
         public SOWRequirement SOWRequirements { get; set; }
 
         [ForeignKey("Recruiter")]
-        public Employee Recruiters { get; set; }
+        public Employee Employee { get; set; }
 
-        [ForeignKey("Status")]
-        public InterviewStatus Statuses { get; set; }
+        [ForeignKey("StatusId")]
+        public InterviewStatus InterviewStatus { get; set; }
 
     }
     public class InterviewsDTO
