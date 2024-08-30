@@ -4,10 +4,10 @@ namespace BlogsApi.Services
 {
     public interface IBlogsService
     {
-        Task<IEnumerable<Blogs>> GetAll();
-        Task<Blogs> Get(string id);
-        Task<Blogs> Add(Blogs _object);
-        Task<Blogs> Update(Blogs _object);
+        Task<IEnumerable<BlogsDTO>> GetAll();
+        Task<BlogsDTO> Get(string id);
+        Task<BlogsDTO> Add(BlogsDTO _object);
+        Task<BlogsDTO> Update(BlogsDTO _object);
         Task<bool> Delete(string id);
     }
 }

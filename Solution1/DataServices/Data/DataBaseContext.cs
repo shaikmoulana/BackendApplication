@@ -14,12 +14,8 @@ namespace DataServices.Data
         {
         }
 
-        //public DbSet<EmployeeLogin> EmployeeLoginTbl { get; set; }
-
         public DbSet<Employee> TblEmployee { get; set; }
-        //public DbSet<Blogs> TblBlogs { get; set; }
-        public DbSet<Blogs> Blogs { get; set; }
-        
+        public DbSet<Blogs> TblBlogs { get; set; }        
         public DbSet<Designation> TblDesignation { get; set; }
         public DbSet<Technology> TblTechnology { get; set; }
         public DbSet<Project> TblProject { get; set; }
@@ -40,16 +36,7 @@ namespace DataServices.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            /*modelBuilder.Entity<Department>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-
-                // Specify that MyGuid maps to a varchar(36) column
-                entity.Property(e => e.Id)
-                .HasColumnType("varchar(36)")
-                .IsRequired();
-            });*/
-
+           
             //----------3rd table_Employee------------------------------------
             modelBuilder.Entity<Employee>()
             .HasOne(e => e.Designation)
@@ -89,51 +76,6 @@ namespace DataServices.Data
                         .HasOne(cc => cc.Client)
                         .WithMany(c => c.ClientContact)
                         .HasForeignKey(cc => cc.ClientId);
-
-
-            //----------9th table Project------------------------------------
-            /*modelBuilder.Entity<Project>()
-                        .HasOne(p => p.Client)
-                        .WithMany(c => c.Project)
-                        .HasForeignKey(p => p.ClientId);
-
-            modelBuilder.Entity<Project>()
-                        .HasOne(p => p.Employee)
-                        .WithMany(e => e.Project)
-                        .HasForeignKey(p => p.TechnicalProjectManager);
-
-            modelBuilder.Entity<Project>()
-                        .HasOne(p => p.EmployeeSalesContact)
-                        .WithMany(e => e.Project)
-                        .HasForeignKey(p => p.SalesContact);
-
-            modelBuilder.Entity<Project>()
-                        .HasOne(p => p.EmployeesPMO)
-                        .WithMany(e => e.Project)
-                        .HasForeignKey(p => p.PMO);
-*/
-            //----------10th table Project Technology------------------------------------
-            /*modelBuilder.Entity<ProjectTechnology>()
-                        .HasOne(pt => pt.Client)
-                        .WithMany(c => c.ProjectTechnology)
-                        .HasForeignKey(pt => pt.Project);
-
-            modelBuilder.Entity<ProjectTechnology>()
-                        .HasOne(pt => pt.Technologies)
-                        .WithMany(c => c.ProjectTechnology)
-                        .HasForeignKey(pt => pt.Technology);
-*/
-            //----------11th ProjectEmployee table------------------------------------
-            /*modelBuilder.Entity<ProjectEmployee>()
-                        .HasOne(pt => pt.Projects)
-                        .WithMany(c => c.ProjectEmployee)
-                        .HasForeignKey(pt => pt.Project);
-               
-            modelBuilder.Entity<ProjectEmployee>()
-                        .HasOne(pt => pt.Employees)
-                        .WithMany(c => c.ProjectEmployee)
-                        .HasForeignKey(pt => pt.Employee);
-*/
 
             //----------13th SOW table------------------------------------
 
@@ -202,14 +144,11 @@ namespace DataServices.Data
 
             //----------19th Blogs table------------------------------------
             modelBuilder.Entity<Blogs>()
-                                    .ToTable("Blogs")
-                                    .HasOne(pt => pt.employee)
-                                    .WithMany(c => c.Blog)
-                                    .HasForeignKey(pt => pt.Author);
+                                   .HasOne(pt => pt.Employee)
+                                   .WithMany(c => c.Blog)
+                                   .HasForeignKey(pt => pt.Author);
 
-
-
-            //Foreign key relation for Project model class
+            //-----------Foreign key relation for Project model class-----------
 
             modelBuilder.Entity<Project>()
                 .HasOne(c => c.Client)

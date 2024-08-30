@@ -9,28 +9,28 @@ namespace BlogsApi.Controllers
     [ApiController]
     public class BlogsController : ControllerBase
     {
-        private readonly IBlogsService _blogsService;
+        private readonly IBlogsService _Service;
         private readonly ILogger<BlogsController> _logger;
 
-        public BlogsController(IBlogsService blogsService, ILogger<BlogsController> logger)
+        public BlogsController(IBlogsService Service, ILogger<BlogsController> logger)
         {
-            _blogsService = blogsService;
+            _Service = Service;
             _logger = logger;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Blogs>>> GetAll()
+        public async Task<ActionResult<IEnumerable<BlogsDTO>>> GetAll()
         {
             _logger.LogInformation("Fetching all ");
-            var data = await _blogsService.GetAll();
+            var data = await _Service.GetAll();
             return Ok(data);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Blogs>> Get(string id)
+        public async Task<ActionResult<BlogsDTO>> Get(string id)
         {
             _logger.LogInformation("Fetching with id: {Id}", id);
-            var blogs = await _blogsService.Get(id);
+            var blogs = await _Service.Get(id);
 
             if (blogs == null)
             {
@@ -43,84 +43,65 @@ namespace BlogsApi.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<Blogs>> Add([FromBody] BlogsDTO blogsDTO)
+        public async Task<ActionResult<Blogs>> Add([FromBody] BlogsDTO _object)
         {
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Invalid model state for creating sow");
+                _logger.LogWarning("Invalid model state for creating blogs");
                 return BadRequest(ModelState);
             }
 
-            _logger.LogInformation("Creating a new sow");
-            var blogs = new Blogs
+            _logger.LogInformation("Creating a new Blogs");
+            try
             {
-                Title = blogsDTO.Title,
-                Author = blogsDTO.Author,
-                Status = blogsDTO.Status,
-                TargetDate = blogsDTO.TargetDate,
-                CompletedDate = blogsDTO.CompletedDate,
-                PublishedDate = blogsDTO.PublishedDate,
-                IsActive = blogsDTO.IsActive,
-                CreatedBy = blogsDTO.CreatedBy,
-                CreatedDate = blogsDTO.CreatedDate,
-                UpdatedBy = blogsDTO.UpdatedBy,
-                UpdatedDate = blogsDTO.UpdatedDate
-            };
-
-            var created = await _blogsService.Add(blogs);
-            return CreatedAtAction(nameof(GetAll), new { id = created.Id }, created);
+                var created = await _Service.Add(_object);
+                return CreatedAtAction(nameof(GetAll), new { id = created.Id }, created);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, [FromBody] BlogsDTO blogsDTO)
+        public async Task<IActionResult> Update(string id, [FromBody] BlogsDTO _object)
         {
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Invalid model state for updating sow");
+                _logger.LogWarning("Invalid model state for updating Blogs");
                 return BadRequest(ModelState);
             }
 
-            if (id != blogsDTO.Id)
+            if (id != _object.Id)
             {
-                _logger.LogWarning("sow id: {Id} does not match with the id in the request body", id);
-                return BadRequest("sow ID mismatch.");
+                _logger.LogWarning("Blogs id: {Id} does not match with the id in the request body", id);
+                return BadRequest("Blogs ID mismatch.");
             }
 
-            var existingData = await _blogsService.Get(id);
-            if (existingData  == null)
+            _logger.LogInformation("Updating Blogs with id: {Id}", id);
+            try
             {
-                _logger.LogWarning("sow with id: {Id} not found", id);
-                return NotFound();
+                await _Service.Update(_object);
             }
-
-            _logger.LogInformation("Updating sow with id: {Id}", id);
-
-            // Update properties from DTO
-            existingData.Title = blogsDTO.Title;
-            existingData.Author = blogsDTO.Author;
-            existingData.Status = blogsDTO.Status;
-            existingData.TargetDate = blogsDTO.TargetDate;
-            existingData.CompletedDate = blogsDTO.CompletedDate;
-            existingData.PublishedDate = blogsDTO.PublishedDate;
-            existingData.IsActive = blogsDTO.IsActive;
-            existingData.UpdatedBy = blogsDTO.UpdatedBy;
-            existingData.UpdatedDate = blogsDTO.UpdatedDate;
-
-            await _blogsService.Update(existingData);
-
-            return Ok(existingData);
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            _logger.LogInformation("Deleting sow with id: {Id}", id);
-            var success = await _blogsService.Delete(id);
+            _logger.LogInformation("Deleting Blogs with id: {Id}", id);
+            var success = await _Service.Delete(id);
 
             if (!success)
             {
-                _logger.LogWarning("sow with id: {Id} not found", id);
+                _logger.LogWarning("Blogs with id: {Id} not found", id);
                 return NotFound();
             }
 
@@ -128,4 +109,3 @@ namespace BlogsApi.Controllers
         }
     }
 }
-

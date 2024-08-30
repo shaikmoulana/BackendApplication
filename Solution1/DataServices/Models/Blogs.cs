@@ -10,12 +10,9 @@ namespace DataServices.Models
 {
     public class Blogs
     {
-/*        [Key]
-        [StringLength(36)]*/
         public string Id { get; set; } = Guid.NewGuid().ToString();
         [StringLength(200)]
         public string? Title { get; set; }
-        //[StringLength(int.MaxValue)]
         public string? Author { get; set; }
         [StringLength(50)]
         public string? Status { get; set; }
@@ -30,7 +27,7 @@ namespace DataServices.Models
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
         [ForeignKey("Author")]
-        public Employee employee { get; set; }
+        public Employee? Employee { get; set; }
     }
 
     public class BlogsDTO {
