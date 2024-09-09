@@ -17,7 +17,10 @@ namespace EmployeeApi.Services
 
         public async Task<IEnumerable<EmployeeTechnologyDTO>> GetAll()
         {
-            var empTechnologies = await _context.TblEmployeeTechnology.Include(e => e.Technologies).ToListAsync();
+            var empTechnologies = await _context.TblEmployeeTechnology
+                .Include(e => e.Technologies)
+                .Include(e => e.Employee)
+                .ToListAsync();
             var empTechDtos = new List<EmployeeTechnologyDTO>();
 
             foreach (var e in empTechnologies)
@@ -25,7 +28,7 @@ namespace EmployeeApi.Services
                 empTechDtos.Add(new EmployeeTechnologyDTO()
                 {
                     Id = e.Id,
-                    Name = e.Name,
+                    EmployeeID = e.Employee?.EmployeeID,
                     Technology = e.Technologies?.Name,
                     IsActive = e.IsActive,
                     CreatedDate = DateTime.Now,
@@ -42,13 +45,14 @@ namespace EmployeeApi.Services
         {
             var employeeTechnology = await _context.TblEmployeeTechnology
                .Include(e => e.Technologies)
+               .Include(e => e.Employee)
                .FirstOrDefaultAsync(t => t.Id == id);
             if (employeeTechnology == null) return null;
 
             return new EmployeeTechnologyDTO
             {
                 Id = employeeTechnology.Id,
-                Name = employeeTechnology.Name,
+                EmployeeID = employeeTechnology.Employee?.EmployeeID,
                 Technology = employeeTechnology.Technologies?.Name,
                 IsActive = employeeTechnology.IsActive,
                 CreatedDate = DateTime.Now,
@@ -66,10 +70,16 @@ namespace EmployeeApi.Services
             if (technology == null)
                 throw new KeyNotFoundException("Technology not found");
 
+            var employee = await _context.TblEmployee
+                .FirstOrDefaultAsync(t => t.EmployeeID == empTechDto.EmployeeID);
+
+            if (employee == null)
+                throw new KeyNotFoundException("Employee not found");
+
             var employeeTechnology = new EmployeeTechnology
             {
-                Name = empTechDto.Name,
-                TechnologyId = technology.Id,
+                EmployeeID = employee.Id,
+                Technology = technology.Id,
                 IsActive = true,
                 CreatedDate = DateTime.Now,
                 CreatedBy = empTechDto.CreatedBy,
@@ -99,8 +109,14 @@ namespace EmployeeApi.Services
             if (technology == null)
                 throw new KeyNotFoundException("Technology not found");
 
-            employeeTechnology.Name = empTechDto.Name;
-            employeeTechnology.TechnologyId = technology.Id;
+            var employee = await _context.TblEmployee
+                .FirstOrDefaultAsync(t => t.EmployeeID == empTechDto.EmployeeID);
+
+            if (employee == null)
+                throw new KeyNotFoundException("Employee not found");
+
+            employeeTechnology.EmployeeID = employee.Id;
+            employeeTechnology.Technology = technology.Id;
             employeeTechnology.IsActive = true;
             employeeTechnology.CreatedBy = empTechDto.CreatedBy;
             employeeTechnology.CreatedDate = DateTime.Now;

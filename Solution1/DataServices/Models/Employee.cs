@@ -51,6 +51,8 @@ namespace DataServices.Models
         public DateTime? UpdatedDate { get; set; }
 
         public string? Password { get; set; }
+        public string ? Profile {  get; set; }
+        public string PhoneNo { get; set; }
         
         [ForeignKey("DesignationId")]
         public Designation Designation { get; set; }
@@ -67,6 +69,8 @@ namespace DataServices.Models
         public ICollection<Project> TechnicalProjectManagerId { get; set; }
         public ICollection<Project> SalesContactId { get; set; }
         public ICollection<Project> PMOId { get; set; }
+        public ICollection<EmployeeTechnology> EmployeeTechnology { get; set; }
+
     }
 
     public class EmployeeDTO
@@ -88,6 +92,8 @@ namespace DataServices.Models
         public DateTime? UpdatedDate { get; set; }
 
         public string? Password { get; set; }
+        public string? Profile { get; set; }
+        public string PhoneNo { get; set; }
 
     }
 }

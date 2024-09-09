@@ -61,7 +61,12 @@ namespace DataServices.Data
             modelBuilder.Entity<EmployeeTechnology>()
                         .HasOne(et => et.Technologies)
                         .WithMany(t => t.EmployeeTechnology)
-                        .HasForeignKey(et => et.TechnologyId);
+                        .HasForeignKey(et => et.Technology);
+
+            modelBuilder.Entity<EmployeeTechnology>()
+            .HasOne(et => et.Employee)
+            .WithMany(t => t.EmployeeTechnology)
+            .HasForeignKey(et => et.EmployeeID);
 
 
             //----------6th table Client------------------------------------

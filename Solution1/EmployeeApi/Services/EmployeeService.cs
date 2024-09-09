@@ -40,7 +40,9 @@ namespace EmployeeApi.Services
                     CreatedDate = employee.CreatedDate,
                     UpdatedBy = employee.UpdatedBy,
                     UpdatedDate = employee.UpdatedDate,
-                    Password = employee.Password
+                    //Password = employee.Password
+                    Profile = employee.Profile,
+                    PhoneNo = employee.PhoneNo
                 });
             }
 
@@ -72,7 +74,9 @@ namespace EmployeeApi.Services
                 CreatedDate = employee.CreatedDate,
                 UpdatedBy = employee.UpdatedBy,
                 UpdatedDate = employee.UpdatedDate,
-                Password = employee.Password
+                //Password = employee.Password
+                Profile = employee.Profile,
+                PhoneNo = employee.PhoneNo
             };
         }
 
@@ -106,7 +110,9 @@ namespace EmployeeApi.Services
                 CreatedDate = empDto.CreatedDate,
                 UpdatedBy = empDto.UpdatedBy,
                 UpdatedDate = empDto.UpdatedDate,
-                Password = PasswordHasher.HashPassword(empDto.Password)
+                Password = PasswordHasher.HashPassword(empDto.Password),
+                Profile = empDto.Profile,
+                PhoneNo = empDto.PhoneNo
             };
 
             _context.TblEmployee.Add(employee);
@@ -148,6 +154,8 @@ namespace EmployeeApi.Services
             employee.UpdatedBy = empDto.UpdatedBy;
             employee.UpdatedDate = empDto.UpdatedDate;
             employee.Password = PasswordHasher.HashPassword(empDto.Password);
+            employee.Profile = empDto.Profile;
+            employee.PhoneNo = empDto.PhoneNo;
 
             _context.Entry(employee).State = EntityState.Modified;
             await _context.SaveChangesAsync();
