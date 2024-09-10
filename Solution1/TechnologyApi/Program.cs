@@ -80,4 +80,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseDeveloperExceptionPage();
+
 app.Run();
