@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using SOWApi.Services;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
@@ -12,6 +13,14 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Host.UseSerilog((context, services, configuration) =>
+{
+    configuration
+    .ReadFrom.Configuration(context.Configuration) // Read settings from appsettings.json
+    .Enrich.FromLogContext() // Include additional information like requestId, etc.
+    .WriteTo.File("LOG/log-.txt", rollingInterval: RollingInterval.Day); // Save logs in LOG folder
+});
+
 builder.Services.AddDbContext<DataBaseContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("sqlcon")));
 

@@ -1,0 +1,2 @@
+{Timestamp:yyyy-MM-dd HH🇲🇲ss} [WRN] Failed to determine the https port for redirect.
+{Timestamp:yyyy-MM-dd HH🇲🇲ss} [INF] Fetching all 

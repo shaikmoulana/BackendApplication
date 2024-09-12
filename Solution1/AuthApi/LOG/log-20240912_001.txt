@@ -1,0 +1,3 @@
+2024-09-12 17:19:27.446 +05:30 [WRN] Failed to determine the https port for redirect.
+2024-09-12 17:19:52.451 +05:30 [INF] Begin GenerateToken method for user: employee11@miraclesoft.com
+2024-09-12 17:19:52.601 +05:30 [INF] End  GenerateToken method.

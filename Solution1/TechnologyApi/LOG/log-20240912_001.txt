@@ -1,0 +1,2 @@
+2024-09-12 17:17:50.581 +05:30 [WRN] Failed to determine the https port for redirect.
+2024-09-12 17:17:51.374 +05:30 [INF] Fetching all technologies
