@@ -35,7 +35,7 @@ namespace DataServices.Models
         public string? ReportingTo { get; set; }
         public DateTime? JoiningDate { get; set; }
         public DateTime? RelievingDate { get; set; }
-        public DateTime? Projection { get; set; }
+        public string? Projection { get; set; }
 
         [Required]
         public bool IsActive { get; set; }
@@ -81,10 +81,11 @@ namespace DataServices.Models
         public string EmployeeID { get; set; }
         public string EmailId { get; set; }
         public string? Department { get; set; }
+        public string[] Technology {  get; set; } 
         public string? ReportingTo { get; set; }
         public DateTime? JoiningDate { get; set; }
         public DateTime? RelievingDate { get; set; }
-        public DateTime? Projection { get; set; }
+        public string? Projection { get; set; }
         public bool IsActive { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
