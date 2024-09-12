@@ -72,7 +72,7 @@ app.UseHttpsRedirection();
 app.UseCors();
 app.UseAuthentication(); // Add this line to enable authentication
 app.UseAuthorization();
-
+app.UseDeveloperExceptionPage();
 app.MapControllers();
 
 app.Run();
