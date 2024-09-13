@@ -1,0 +1,3 @@
+{Timestamp:yyyy-MM-dd HH🇲🇲ss} [WRN] Failed to determine the https port for redirect.
+{Timestamp:yyyy-MM-dd HH🇲🇲ss} [INF] Fetching all
+{Timestamp:yyyy-MM-dd HH🇲🇲ss} [INF] Fetching with id: 2BEBE29B-DD3C-4010-8508-336E1EA7FC23

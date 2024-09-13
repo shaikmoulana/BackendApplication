@@ -1,0 +1,4 @@
+2024-09-13 16:57:27.933 +05:30 [WRN] Failed to determine the https port for redirect.
+2024-09-13 16:58:41.159 +05:30 [INF] Fetching all
+2024-09-13 16:59:32.406 +05:30 [INF] Fetching with id: 2BEBE29B-DD3C-4010-8508-336E1EA7FC23
+{Timestamp:yyyy-MM-dd HH🇲🇲ss} [WRN] Failed to determine the https port for redirect.

@@ -1,0 +1,1 @@
+{Timestamp:yyyy-MM-dd HH🇲🇲ss} [WRN] Failed to determine the https port for redirect.

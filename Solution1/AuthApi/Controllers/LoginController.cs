@@ -31,12 +31,27 @@ namespace AuthApi.Controllers
                 return Unauthorized("Invalid emailId or password.");
             }
         }
-        [HttpGet]
+        /*[HttpGet]
         [Authorize]  // Add roles or policies if required
         public IActionResult Hello()
         {
             return Ok("Hello User");
+        }*/
+
+        [HttpGet]
+        [Authorize(Roles = "User,Admin")]  // Both User and Admin can access
+        public IActionResult Hello()
+        {
+            return Ok("Hello User");
         }
+
+        [HttpPost("admin")]
+        [Authorize(Roles = "Admin")]  // Only Admin can perform this operation
+        public IActionResult AdminOperation()
+        {
+            return Ok("This is an admin operation.");
+        }
+
     }
 }
 

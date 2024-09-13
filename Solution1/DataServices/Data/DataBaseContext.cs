@@ -15,6 +15,7 @@ namespace DataServices.Data
         }
 
         public DbSet<Employee> TblEmployee { get; set; }
+        public DbSet<Role> TblRole { get; set; }
         public DbSet<Blogs> TblBlogs { get; set; }        
         public DbSet<Designation> TblDesignation { get; set; }
         public DbSet<Technology> TblTechnology { get; set; }
@@ -47,6 +48,11 @@ namespace DataServices.Data
             .HasOne(e => e.Department)
             .WithMany(d => d.Employee)
             .HasForeignKey(e => e.DepartmentId);
+
+            modelBuilder.Entity<Employee>()
+            .HasOne(e => e.Roles)
+            .WithMany(d => d.Employee)
+            .HasForeignKey(e => e.Role);
 
 
             //----------4th table Technology------------------------------------

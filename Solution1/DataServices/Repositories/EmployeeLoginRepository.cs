@@ -18,6 +18,15 @@ namespace DataServices.Repositories
             _logger = logger;
         }
 
+        public async Task<string> GetUserRole(string emailId)
+        {
+            // Assuming you have a relationship between Employee and Role tables
+            var employee = await _dbContext.TblEmployee.Include(e => e.Roles)
+                                                     .FirstOrDefaultAsync(e => e.EmailId == emailId);
+            return employee?.Roles?.RoleName; // Return the role name
+        }
+
+
         public async Task<bool> Validate(string emailId, string password)
         {
             try

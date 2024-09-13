@@ -18,7 +18,11 @@ namespace EmployeeApi.Services
 
         public async Task<IEnumerable<EmployeeDTO>> GetAll()
         {
-            var employees = await _context.TblEmployee.Include(e => e.Department).Include(e => e.Designation).ToListAsync();
+            var employees = await _context.TblEmployee
+                .Include(e => e.Department)
+                .Include(e => e.Designation)
+                .Include(e => e.Roles)
+                .ToListAsync();
             var empDtos = new List<EmployeeDTO>();
 
             foreach (var employee in employees)
@@ -55,6 +59,7 @@ namespace EmployeeApi.Services
             var employee = await _context.TblEmployee
                   .Include(e => e.Department)
                   .Include(e => e.Designation)
+                  .Include(e => e.Roles)
                   .FirstOrDefaultAsync(t => t.Id == id);
             if (employee == null) return null;
 
@@ -96,6 +101,12 @@ namespace EmployeeApi.Services
             if (designation == null)
                 throw new KeyNotFoundException("Designation not found");
 
+            var role = await _context.TblRole
+               .FirstOrDefaultAsync(d => d.RoleName == empDto.Role);
+
+            if (role == null)
+                throw new KeyNotFoundException("Role not found");
+
             var employee = new Employee
             {
                 Name = empDto.Name,
@@ -115,7 +126,7 @@ namespace EmployeeApi.Services
                 Password = PasswordHasher.HashPassword(empDto.Password),
                 Profile = empDto.Profile,
                 PhoneNo = empDto.PhoneNo,
-                //Role = empDto.Role,
+                Role = empDto.Role,
             };
 
             _context.TblEmployee.Add(employee);
@@ -144,6 +155,12 @@ namespace EmployeeApi.Services
             if (designation == null)
                 throw new KeyNotFoundException("Designation not found");
 
+            var role = await _context.TblRole
+               .FirstOrDefaultAsync(d => d.RoleName == empDto.Role);
+
+            if (role == null)
+                throw new KeyNotFoundException("Role not found");
+
             employee.Name = empDto.Name;
             employee.DesignationId = designation.Id;
             employee.EmployeeID = empDto.EmployeeID;
@@ -159,7 +176,7 @@ namespace EmployeeApi.Services
             employee.Password = PasswordHasher.HashPassword(empDto.Password);
             employee.Profile = empDto.Profile;
             employee.PhoneNo = empDto.PhoneNo;
-            //employee.Role = empDto.Role;
+            employee.Role = empDto.Role;
 
             _context.Entry(employee).State = EntityState.Modified;
             await _context.SaveChangesAsync();

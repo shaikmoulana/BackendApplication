@@ -1,0 +1,2 @@
+2024-09-13 16:44:29.570 +05:30 [WRN] Failed to determine the https port for redirect.
+{Timestamp:yyyy-MM-dd HH🇲🇲ss} [WRN] Failed to determine the https port for redirect.

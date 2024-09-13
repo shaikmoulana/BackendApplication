@@ -53,12 +53,17 @@ namespace DataServices.Models
         public string? Password { get; set; }
         public string ? Profile {  get; set; }
         public string PhoneNo { get; set; }
+
+        public string? Role { get; set; }
         
         [ForeignKey("DesignationId")]
         public Designation Designation { get; set; }
 
         [ForeignKey("DepartmentId")]
         public Department Department { get; set; }
+
+        [ForeignKey("Role")]
+        public Role Roles { get; set; }
 
         public ICollection<Blogs> Blog  { get; set; }
         public ICollection<Client> Client { get; set; }
@@ -95,6 +100,7 @@ namespace DataServices.Models
         public string? Password { get; set; }
         public string? Profile { get; set; }
         public string PhoneNo { get; set; }
+        public string? Role { get; set; }
 
     }
 }

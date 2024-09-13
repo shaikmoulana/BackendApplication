@@ -1,0 +1,14 @@
+2024-09-13 17:26:18.482 +05:30 [WRN] Failed to determine the https port for redirect.
+2024-09-13 17:26:18.729 +05:30 [INF] Fetching all
+2024-09-13 17:27:23.328 +05:30 [INF] Creating a new
+2024-09-13 17:27:38.191 +05:30 [INF] Fetching with id: 8287980f-9d57-4e7e-b405-04931651fa63
+2024-09-13 17:28:07.273 +05:30 [INF] Updating  with id: 8287980f-9d57-4e7e-b405-04931651fa63
+2024-09-13 17:28:13.022 +05:30 [INF] Fetching with id: 8287980f-9d57-4e7e-b405-04931651fa63
+2024-09-13 17:29:30.740 +05:30 [INF] Fetching all
+2024-09-13 17:30:18.336 +05:30 [INF] Fetching all
+2024-09-13 17:31:04.148 +05:30 [INF] Fetching with id: 2277d707-63da-41b1-a8dc-9e4c8dbf0d77
+2024-09-13 17:32:09.652 +05:30 [INF] Fetching all
+2024-09-13 17:32:37.051 +05:30 [INF] Fetching with id: 8287980f-9d57-4e7e-b405-04931651fa63
+2024-09-13 17:32:45.142 +05:30 [INF] Deleting with id: 8287980f-9d57-4e7e-b405-04931651fa63
+2024-09-13 17:32:49.593 +05:30 [INF] Fetching with id: 8287980f-9d57-4e7e-b405-04931651fa63
+2024-09-13 17:32:49.596 +05:30 [WRN] with id: 8287980f-9d57-4e7e-b405-04931651fa63 not found

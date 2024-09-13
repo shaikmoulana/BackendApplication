@@ -46,6 +46,10 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
     options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
+    options.AddPolicy("DirectorOnly", policy => policy.RequireRole("Director"));
+    options.AddPolicy("ProjectManagerOnly", policy => policy.RequireRole("Project Manager"));
+    options.AddPolicy("TeamLeadOnly", policy => policy.RequireRole("Team Lead"));
+    options.AddPolicy("TeamMemberOnly", policy => policy.RequireRole("Team Member"));
 });
 
 builder.Services.AddControllers();
