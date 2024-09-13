@@ -31,12 +31,6 @@ namespace AuthApi.Controllers
                 return Unauthorized("Invalid emailId or password.");
             }
         }
-        /*[HttpGet]
-        [Authorize]  // Add roles or policies if required
-        public IActionResult Hello()
-        {
-            return Ok("Hello User");
-        }*/
 
         [HttpGet]
         [Authorize(Roles = "User,Admin")]  // Both User and Admin can access

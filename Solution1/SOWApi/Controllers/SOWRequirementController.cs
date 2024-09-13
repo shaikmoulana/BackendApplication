@@ -1,4 +1,5 @@
 ﻿using DataServices.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SOWApi.Services;
@@ -19,6 +20,7 @@ namespace SOWAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead, Team Member")]
         public async Task<ActionResult<IEnumerable<SOWRequirementDTO>>> GetAll()
         {
             _logger.LogInformation("Fetching all SOW");
@@ -27,6 +29,7 @@ namespace SOWAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead, Team Member")]
         public async Task<ActionResult<SOWRequirementDTO>> Get(string id)
         {
             _logger.LogInformation("Fetching sow with id: {Id}", id);
@@ -43,6 +46,7 @@ namespace SOWAPI.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Director, Project Manager")]
         public async Task<ActionResult<SOWRequirementDTO>> Add([FromBody] SOWRequirementDTO _object)
         {
             if (!ModelState.IsValid)
@@ -66,6 +70,7 @@ namespace SOWAPI.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead")]
         public async Task<IActionResult> Update(string id, [FromBody] SOWRequirementDTO _object)
         {
             if (!ModelState.IsValid)
@@ -96,6 +101,7 @@ namespace SOWAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             _logger.LogInformation("Deleting sow with id: {Id}", id);

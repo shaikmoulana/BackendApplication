@@ -1,5 +1,6 @@
 ﻿using DataServices.Models;
 using EmployeeApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeApi.Controllers
@@ -18,6 +19,7 @@ namespace EmployeeApi.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead, Team Member")]
         public async Task<ActionResult<IEnumerable<EmployeeTechnologyDTO>>> GetAll()
         {
             _logger.LogInformation("Fetching all employeeTechnologies");
@@ -26,6 +28,7 @@ namespace EmployeeApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead, Team Member")]
         public async Task<ActionResult<EmployeeTechnologyDTO>> Get(string id)
         {
             _logger.LogInformation("Fetching employee with id: {Id}", id);
@@ -41,6 +44,7 @@ namespace EmployeeApi.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Director, Project Manager")]
         public async Task<IActionResult> Create(EmployeeTechnologyDTO empTechDto)
         {
             if (!ModelState.IsValid)
@@ -65,6 +69,7 @@ namespace EmployeeApi.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead")]
         public async Task<IActionResult> Update(string id, [FromBody] EmployeeTechnologyDTO empTechDto)
         {
             if (!ModelState.IsValid)
@@ -93,6 +98,7 @@ namespace EmployeeApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             _logger.LogInformation("Deleting employeeTechnology with id: {Id}", id);

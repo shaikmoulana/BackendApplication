@@ -1,5 +1,6 @@
 ﻿using DataServices.Models;
 using DepartmentApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.Metrics;
@@ -20,6 +21,7 @@ namespace ClientApi.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead, Team Member")]
         public async Task<ActionResult<IEnumerable<Department>>> GetAll()
         {
             _logger.LogInformation("Fetching all");
@@ -28,6 +30,7 @@ namespace ClientApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead, Team Member")]
         public async Task<ActionResult<Department>> Get(string id)
         {
             _logger.LogInformation("Fetching with id: {Id}", id);
@@ -44,6 +47,7 @@ namespace ClientApi.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Director, Project Manager")]
         public async Task<ActionResult<Department>> Add([FromBody] DepartmentDTO _object)
         {
             if (!ModelState.IsValid)
@@ -69,6 +73,7 @@ namespace ClientApi.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead")]
         public async Task<IActionResult> Update(string id, [FromBody] DepartmentDTO _object)
         {
             if (!ModelState.IsValid)
@@ -104,6 +109,7 @@ namespace ClientApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             _logger.LogInformation("Deleting with id: {Id}", id);

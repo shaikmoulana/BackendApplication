@@ -1,4 +1,5 @@
 ﻿using DataServices.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ namespace TechnologyApi.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead, Team Member")]
         public async Task<ActionResult<IEnumerable<TechnologyDTO>>> GetTechnologies()
         {
             _logger.LogInformation("Fetching all technologies");
@@ -29,6 +31,7 @@ namespace TechnologyApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead, Team Member")]
         public async Task<ActionResult<TechnologyDTO>> GetTechnology(string id)
         {
             _logger.LogInformation("Fetching technology with id: {Id}", id);
@@ -44,6 +47,7 @@ namespace TechnologyApi.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Director, Project Manager")]
         public async Task<ActionResult<TechnologyDTO>> Create([FromBody] TechnologyDTO techDto)
         {
             if (!ModelState.IsValid)
@@ -67,6 +71,7 @@ namespace TechnologyApi.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead")]
         public async Task<IActionResult> UpdateTechnology(string id, [FromBody] TechnologyDTO techDto)
         {
             if (id != techDto.Id)
@@ -97,6 +102,7 @@ namespace TechnologyApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteTechnology(string id)
         {
             _logger.LogInformation("Deleting technology with id: {Id}", id);

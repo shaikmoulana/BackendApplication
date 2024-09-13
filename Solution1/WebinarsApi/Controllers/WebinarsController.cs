@@ -2,6 +2,7 @@
 using WebinarsApi.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebinarsApi.Controllers
 {
@@ -19,6 +20,7 @@ namespace WebinarsApi.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead, Team Member")]
         public async Task<ActionResult<IEnumerable<WebinarsDTO>>> GetAll()
         {
             _logger.LogInformation("Fetching all");
@@ -27,6 +29,7 @@ namespace WebinarsApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead, Team Member")]
         public async Task<ActionResult<WebinarsDTO>> Get(string id)
         {
             _logger.LogInformation("Fetching with id: {Id}", id);
@@ -43,6 +46,7 @@ namespace WebinarsApi.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Director, Project Manager")]
         public async Task<ActionResult<WebinarsDTO>> Add([FromBody] WebinarsDTO _object)
         {
             if (!ModelState.IsValid)
@@ -68,6 +72,7 @@ namespace WebinarsApi.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead")]
         public async Task<IActionResult> Update(string id, [FromBody] WebinarsDTO _object)
         {
             if (!ModelState.IsValid)
@@ -99,6 +104,7 @@ namespace WebinarsApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             _logger.LogInformation("Deleting with id: {Id}", id);

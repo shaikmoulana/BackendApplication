@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ClientApi.Services;
 using ClientServices.Services;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClientApi.Controllers
 {
@@ -21,6 +22,7 @@ namespace ClientApi.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead, Team Member")]
         public async Task<ActionResult<IEnumerable<ClientContactDTO>>> GetAll()
         {
             _logger.LogInformation("Fetching all");
@@ -29,6 +31,7 @@ namespace ClientApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead, Team Member")]
         public async Task<ActionResult<ClientContactDTO>> Get(string id)
         {
             _logger.LogInformation("Fetching with id: {Id}", id);
@@ -45,6 +48,7 @@ namespace ClientApi.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Director, Project Manager")]
         public async Task<ActionResult<ClientContactDTO>> Add([FromBody] ClientContactDTO _object)
         {
             if (!ModelState.IsValid)
@@ -70,6 +74,7 @@ namespace ClientApi.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead")]
         public async Task<IActionResult> Update(string id, [FromBody] ClientContactDTO _object)
         {
             if (!ModelState.IsValid)
@@ -100,6 +105,7 @@ namespace ClientApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             _logger.LogInformation("Deleting with id: {Id}", id);

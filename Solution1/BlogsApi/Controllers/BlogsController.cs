@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using BlogsApi.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BlogsApi.Controllers
 {
@@ -19,6 +20,7 @@ namespace BlogsApi.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead, Team Member")]
         public async Task<ActionResult<IEnumerable<BlogsDTO>>> GetAll()
         {
             _logger.LogInformation("Fetching all ");
@@ -27,6 +29,7 @@ namespace BlogsApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead, Team Member")]
         public async Task<ActionResult<BlogsDTO>> Get(string id)
         {
             _logger.LogInformation("Fetching with id: {Id}", id);
@@ -43,6 +46,7 @@ namespace BlogsApi.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Director, Project Manager")]
         public async Task<ActionResult<Blogs>> Add([FromBody] BlogsDTO _object)
         {
             if (!ModelState.IsValid)
@@ -66,6 +70,7 @@ namespace BlogsApi.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead")]
         public async Task<IActionResult> Update(string id, [FromBody] BlogsDTO _object)
         {
             if (!ModelState.IsValid)
@@ -94,6 +99,7 @@ namespace BlogsApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             _logger.LogInformation("Deleting Blogs with id: {Id}", id);

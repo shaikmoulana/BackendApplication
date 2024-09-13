@@ -3,6 +3,7 @@ using ProjectApi.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProjectApi.Controllers
 {
@@ -20,6 +21,7 @@ namespace ProjectApi.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead, Team Member")]
         public async Task<ActionResult<IEnumerable<ProjectTechnologyDTO>>> GetAll()
         {
             _logger.LogInformation("Fetching all");
@@ -28,6 +30,7 @@ namespace ProjectApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead, Team Member")]
         public async Task<ActionResult<ProjectTechnologyDTO>> Get(string id)
         {
             _logger.LogInformation("Fetching with id: {Id}", id);
@@ -44,6 +47,7 @@ namespace ProjectApi.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Director, Project Manager")]
         public async Task<ActionResult<ProjectTechnologyDTO>> Add([FromBody] ProjectTechnologyDTO _object)
         {
             if (!ModelState.IsValid)
@@ -69,6 +73,7 @@ namespace ProjectApi.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead")]
         public async Task<IActionResult> Update(string id, [FromBody] ProjectTechnologyDTO _object)
         {
             if (!ModelState.IsValid)
@@ -97,6 +102,7 @@ namespace ProjectApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             _logger.LogInformation("Deleting with id: {Id}", id);
