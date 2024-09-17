@@ -1,53 +1,100 @@
-﻿using DataServices.Models;
+﻿using DataServices.Data;
+using DataServices.Models;
 using DataServices.Repositories;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 
 namespace DepartmentApi.Services
 {
     public class DepartmentService : IDepartmentService
     {
         private readonly IRepository<Department> _repository;
+        private readonly DataBaseContext _context;
 
-        public DepartmentService(IRepository<Department> repository)
+        public DepartmentService(IRepository<Department> repository, DataBaseContext context)
         {
             _repository = repository;
+            _context = context;
         }
 
-        public async Task<IEnumerable<Department>> GetAll()
+        public async Task<IEnumerable<DepartmentDTO>> GetAll()
         {
-            return await _repository.GetAll();
-        }
+            var departments = await _context.TblDepartment.ToListAsync();
 
-        public async Task<Department> Get(string id)
-        {
-            return await _repository.Get(id);
-        }
+            var departmentDTOs = new List<DepartmentDTO>();
 
-        public async Task<Department> Add(Department _object)
-        {
-            return await _repository.Create(_object);
-        }
-
-        public async Task<Department> Update(Department _object)
-        {
-            // Retrieve the existing technology from the database
-            /*var existingData = await _repository.Get(_object.Id);
-            if (existingData == null)
+            foreach (var d in departments)
             {
-                throw new ArgumentException($" with ID {_object.Id} not found.");
+                departmentDTOs.Add(new DepartmentDTO
+                {
+                    Id = d.Id,
+                    Name = d.Name,
+                    IsActive = d.IsActive,
+                    CreatedBy = d.CreatedBy,
+                    CreatedDate = d.CreatedDate,
+                    UpdatedBy = d.UpdatedBy,
+                    UpdatedDate = d.UpdatedDate
+                });
             }
 
-            // Update properties with the new values
-            existingData.Name = _object.Name;
-            existingData.IsActive = true;
-            existingData.CreatedBy = "SYSTEM";
-            existingData.CreatedDate = DateTime.Now;
-            existingData.UpdatedBy = _object.UpdatedBy;
-            existingData.UpdatedDate = _object.UpdatedDate;
-            // Call repository to update the technology
-            return await _repository.Update(existingData);*/
+            return departmentDTOs;
+        }
 
-            return await _repository.Update(_object);
+        public async Task<DepartmentDTO> Get(string id)
+        {
+            var department = await _context.TblDepartment
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (department == null)
+                return null;
+
+            return new DepartmentDTO
+            {
+                Id = department.Id,
+                Name = department.Name,
+                IsActive = department.IsActive,
+                CreatedBy = department.CreatedBy,
+                CreatedDate = department.CreatedDate,
+                UpdatedBy = department.UpdatedBy,
+                UpdatedDate = department.UpdatedDate
+            };
+        }
+
+        public async Task<DepartmentDTO> Add(DepartmentDTO _object)
+        {
+            var department = new Department
+            {
+                Name = _object.Name,
+                IsActive = true,
+                CreatedBy = "SYSTEM",
+                CreatedDate = DateTime.Now,
+                UpdatedBy = _object.UpdatedBy,
+                UpdatedDate = _object.UpdatedDate
+            };
+
+            _context.TblDepartment.Add(department);
+            await _context.SaveChangesAsync();
+
+            _object.Id = department.Id;
+            return _object;
+        }
+
+        public async Task<DepartmentDTO> Update(DepartmentDTO _object)
+        {
+            var department = await _context.TblDepartment.FindAsync(_object.Id);
+
+            if (department == null)
+                throw new KeyNotFoundException("Department not found");
+
+            department.Name = _object.Name;
+            department.IsActive = _object.IsActive;
+            department.UpdatedBy = _object.UpdatedBy;
+            department.UpdatedDate = _object.UpdatedDate;
+
+            _context.Entry(department).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return _object;
         }
 
         public async Task<bool> Delete(string id)
