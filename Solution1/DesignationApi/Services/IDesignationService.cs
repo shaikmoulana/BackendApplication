@@ -4,10 +4,10 @@ namespace DesignationApi.Services
 {
     public interface IDesignationService
     {
-        public Task<IEnumerable<Designation>> GetAll();
-        public Task<Designation> Get(string id);
-        public Task<Designation> Add(Designation _object);
-        public Task<Designation> Update(Designation _object);
+        public Task<IEnumerable<DesignationDTO>> GetAll();
+        public Task<DesignationDTO> Get(string id);
+        public Task<DesignationDTO> Add(DesignationDTO _object);
+        public Task<DesignationDTO> Update(DesignationDTO _object);
         public Task<bool> Delete(string id);
     }
 }

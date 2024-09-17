@@ -1,52 +1,99 @@
-﻿using DataServices.Models;
+﻿using DataServices.Data;
+using DataServices.Models;
 using DataServices.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace DesignationApi.Services
 {
     public class DesignationService : IDesignationService
     {
         private readonly IRepository<Designation> _repository;
+        private readonly DataBaseContext _context;
 
-        public DesignationService(IRepository<Designation> repository)
+        public DesignationService(IRepository<Designation> repository, DataBaseContext context)
         {
             _repository = repository;
+            _context = context;
         }
 
-        public async Task<IEnumerable<Designation>> GetAll()
+        public async Task<IEnumerable<DesignationDTO>> GetAll()
         {
-            return await _repository.GetAll();
-        }
+            var designations = await _context.TblDesignation.ToListAsync();
 
-        public async Task<Designation> Get(string id)
-        {
-            return await _repository.Get(id);
-        }
+            var designationDTOs = new List<DesignationDTO>();
 
-        public async Task<Designation> Add(Designation _object)
-        {
-            return await _repository.Create(_object);
-        }
-
-        public async Task<Designation> Update(Designation _object)
-        {
-            // Retrieve the existing technology from the database
-            /*var existingData = await _repository.Get(_object.Id);
-            if (existingData == null)
+            foreach (var d in designations)
             {
-                throw new ArgumentException($" with ID {_object.Id} not found.");
+                designationDTOs.Add(new DesignationDTO
+                {
+                    Id = d.Id,
+                    Name = d.Name,
+                    IsActive = d.IsActive,
+                    CreatedBy = d.CreatedBy,
+                    CreatedDate = d.CreatedDate,
+                    UpdatedBy = d.UpdatedBy,
+                    UpdatedDate = d.UpdatedDate
+                });
             }
 
-            // Update properties with the new values
-            existingData.Name = _object.Name;
-            existingData.IsActive = true;
-            existingData.CreatedBy = "SYSTEM";
-            existingData.CreatedDate = DateTime.Now;
-            existingData.UpdatedBy = _object.UpdatedBy;
-            existingData.UpdatedDate = _object.UpdatedDate;
-            // Call repository to update the technology
-            return await _repository.Update(existingData);*/
-            return await _repository.Update(_object);
+            return designationDTOs;
+        }
 
+        public async Task<DesignationDTO> Get(string id)
+        {
+            var designation = await _context.TblDesignation
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (designation == null)
+                return null;
+
+            return new DesignationDTO
+            {
+                Id = designation.Id,
+                Name = designation.Name,
+                IsActive = designation.IsActive,
+                CreatedBy = designation.CreatedBy,
+                CreatedDate = designation.CreatedDate,
+                UpdatedBy = designation.UpdatedBy,
+                UpdatedDate = designation.UpdatedDate
+            };
+        }
+
+        public async Task<DesignationDTO> Add(DesignationDTO _object)
+        {
+            var designation = new Designation
+            {
+                Name = _object.Name,
+                IsActive = true,
+                CreatedBy = "SYSTEM",
+                CreatedDate = DateTime.Now,
+                UpdatedBy = _object.UpdatedBy,
+                UpdatedDate = _object.UpdatedDate
+            };
+
+            _context.TblDesignation.Add(designation);
+            await _context.SaveChangesAsync();
+
+            _object.Id = designation.Id;
+            return _object;
+        }
+
+        public async Task<DesignationDTO> Update(DesignationDTO _object)
+        {
+            var designation = await _context.TblDesignation.FindAsync(_object.Id);
+
+            if (designation == null)
+                throw new KeyNotFoundException("Designation not found");
+
+            designation.Name = _object.Name;
+            designation.IsActive = _object.IsActive;
+            designation.UpdatedBy = _object.UpdatedBy;
+            designation.UpdatedDate = _object.UpdatedDate;
+
+            _context.Entry(designation).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return _object;
         }
 
         public async Task<bool> Delete(string id)

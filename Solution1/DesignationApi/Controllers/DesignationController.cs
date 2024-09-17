@@ -56,18 +56,17 @@ namespace DesignationApi.Controllers
             }
 
             _logger.LogInformation("Creating a new");
-            var data = new Designation
-            {
-                Name = _object.Name,
-                IsActive = _object.IsActive,
-                CreatedBy = _object.CreatedBy,
-                CreatedDate = _object.CreatedDate,
-                UpdatedBy = _object.UpdatedBy,
-                UpdatedDate = _object.UpdatedDate
-            };
 
-            var created = await _Service.Add(data);
-            return CreatedAtAction(nameof(GetAll), new { id = created.Id }, created);
+            try
+            {
+                var created = await _Service.Add(_object);
+                return CreatedAtAction(nameof(GetAll), new { id = created.Id }, created);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
 
@@ -87,24 +86,17 @@ namespace DesignationApi.Controllers
                 return BadRequest("ID mismatch.");
             }
 
-            var existingData = await _Service.Get(id);
-            if (existingData == null)
+            try
             {
-                _logger.LogWarning("with id: {Id} not found", id);
-                return NotFound();
+                await _Service.Update(_object);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return NotFound(ex.Message);
             }
 
-            _logger.LogInformation("Updating  with id: {Id}", id);
-
-            // Update properties from DTO
-            existingData.Name = _object.Name;
-            existingData.IsActive = _object.IsActive;
-            existingData.UpdatedBy = _object.UpdatedBy;
-            existingData.UpdatedDate = _object.UpdatedDate;
-
-            await _Service.Update(existingData);
-
-            return Ok(existingData);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
