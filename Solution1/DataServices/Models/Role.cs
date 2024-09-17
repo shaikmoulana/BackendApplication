@@ -13,4 +13,11 @@ namespace DataServices.Models
 
         public ICollection<Employee> Employee { get; set; }
     }
+
+    public class RoleDTO 
+    {
+        public string Id { get; set; }
+        public string RoleName { get; set; }
+    }
+
 }
