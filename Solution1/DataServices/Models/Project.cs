@@ -105,6 +105,7 @@ namespace DataServices.Models
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Client { get; set; }
         public string? ProjectName { get; set; }
+        public string[] Technology { get; set; }
         public string? TechnicalProjectManager { get; set; }
         public string? SalesContact { get; set; }
         public string? PMO { get; set; }

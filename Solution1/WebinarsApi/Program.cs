@@ -13,13 +13,21 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Host.UseSerilog((context, services, configuration) =>
-{
-    configuration
-    .ReadFrom.Configuration(context.Configuration) // Read settings from appsettings.json
-    .Enrich.FromLogContext() // Include additional information like requestId, etc.
-    .WriteTo.File("LOG/log-.txt", rollingInterval: RollingInterval.Day); // Save logs in LOG folder
-});
+builder.Host
+    .UseSerilog((context, services, configuration) =>
+        configuration
+            .ReadFrom.Configuration(context.Configuration)
+            .ReadFrom.Services(services)
+            .Enrich.FromLogContext()
+            .WriteTo.File(
+                "LOG/log-.txt",
+                rollingInterval: RollingInterval.Day,  // Roll logs daily
+                fileSizeLimitBytes: null,              // No size limit on a single file
+                rollOnFileSizeLimit: false,            // Do not create new files based on size
+                retainedFileCountLimit: 5,             // Keep only 5 days of logs
+                shared: true                           // Allow log sharing between processes
+            )
+    );
 
 builder.Services.AddDbContext<DataBaseContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("sqlcon")));
