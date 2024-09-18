@@ -43,7 +43,7 @@ namespace EmployeeApi.Services
                 UpdatedDate = employee.UpdatedDate,
                 Profile = employee.Profile,
                 PhoneNo = employee.PhoneNo,
-                Role = employee.Role
+                Role = employee.Roles?.RoleName
             }).ToList();
 
             return empDtos;
@@ -78,7 +78,7 @@ namespace EmployeeApi.Services
                 UpdatedDate = employee.UpdatedDate,
                 Profile = employee.Profile,
                 PhoneNo = employee.PhoneNo,
-                Role = employee.Role
+                Role = employee.Roles?.RoleName
             };
         }
 
@@ -192,7 +192,7 @@ namespace EmployeeApi.Services
             employee.Password = PasswordHasher.HashPassword(empDto.Password);
             employee.Profile = empDto.Profile;
             employee.PhoneNo = empDto.PhoneNo;
-            employee.Role = empDto.Role;
+            employee.Role = role.Id;
 
             _context.Entry(employee).State = EntityState.Modified;
 
