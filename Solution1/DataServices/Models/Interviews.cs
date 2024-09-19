@@ -8,21 +8,10 @@ using System.Threading.Tasks;
 
 namespace DataServices.Models
 {
-    public class Interviews
+    public class Interviews : InterviewsDTO
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string? SOWRequirementId { get; set; }
-        public string? Name { get; set; }
-        public DateTime? InterviewDate { get; set; }
-        public int? YearsOfExperience { get; set; }
         public string? StatusId { get; set; }
-        public DateTime? On_Boarding { get; set; }
-        public string? Recruiter { get; set; }
-        public bool IsActive { get; set; } = true;
-        public string CreatedBy { get; set; } = "SYSTEM";
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
-        public string? UpdatedBy { get; set; }
-        public DateTime? UpdatedDate { get; set; }
 
         [ForeignKey("SOWRequirementId")]
         public SOWRequirement SOWRequirements { get; set; }
@@ -34,9 +23,8 @@ namespace DataServices.Models
         public InterviewStatus InterviewStatus { get; set; }
 
     }
-    public class InterviewsDTO
+    public class InterviewsDTO : AuditData
     {
-        public string Id { get; set; }
         public string? SOWRequirement { get; set; }
         public string? Name { get; set; }
         public DateTime? InterviewDate { get; set; }
@@ -44,11 +32,6 @@ namespace DataServices.Models
         public string? Status { get; set; }
         public DateTime? On_Boarding { get; set; }
         public string? Recruiter { get; set; }
-        public bool IsActive { get; set; } 
-        public string CreatedBy { get; set; }
-        public DateTime CreatedDate { get; set; } 
-        public string? UpdatedBy { get; set; }
-        public DateTime? UpdatedDate { get; set; }
 
     }
 }

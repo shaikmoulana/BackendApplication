@@ -7,12 +7,10 @@ namespace EmployeeApi.Services
 {
     public class EmployeeService : IEmployeeService
     {
-        private readonly IRepository<Employee> _repository;
         private readonly DataBaseContext _context;
 
-        public EmployeeService(IRepository<Employee> repository, DataBaseContext context)
+        public EmployeeService(DataBaseContext context)
         {
-            _repository = repository;
             _context = context;
         }
 

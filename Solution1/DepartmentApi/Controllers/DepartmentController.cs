@@ -22,7 +22,7 @@ namespace ClientApi.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin, Director, Project Manager, Team Lead, Team Member")]
-        public async Task<ActionResult<IEnumerable<Department>>> GetAll()
+        public async Task<ActionResult<IEnumerable<DepartmentDTO>>> GetAll()
         {
             _logger.LogInformation("Fetching all");
             var data = await _Service.GetAll();
@@ -31,7 +31,7 @@ namespace ClientApi.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin, Director, Project Manager, Team Lead, Team Member")]
-        public async Task<ActionResult<Department>> Get(string id)
+        public async Task<ActionResult<DepartmentDTO>> Get(string id)
         {
             _logger.LogInformation("Fetching with id: {Id}", id);
             var data = await _Service.Get(id);
@@ -48,7 +48,7 @@ namespace ClientApi.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Director, Project Manager")]
-        public async Task<ActionResult<Department>> Add([FromBody] DepartmentDTO _object)
+        public async Task<ActionResult<DepartmentDTO>> Add([FromBody] DepartmentDTO _object)
         {
             if (!ModelState.IsValid)
             {

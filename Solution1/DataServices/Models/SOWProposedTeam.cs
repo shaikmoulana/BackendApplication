@@ -8,44 +8,22 @@ using System.Threading.Tasks;
 
 namespace DataServices.Models
 {
-    public class SOWProposedTeam
+    public class SOWProposedTeam : SOWProposedTeamDTO
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
 
         public string? SOWRequirementId { get; set; }
 
         public string? EmployeeId { get; set; }
-
-        public bool IsActive { get; set; } = true;
-
-        public string CreatedBy { get; set; } = "SYSTEM";
-
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
-
-        public string? UpdatedBy { get; set; }
-
-        public DateTime? UpdatedDate { get; set; }
         [ForeignKey("SOWRequirementId")]
         public SOWRequirement SOWRequirements { get; set; }
         [ForeignKey("EmployeeId")]
         public Employee Employees { get; set; }
     }
 
-    public class SOWProposedTeamDTO
+    public class SOWProposedTeamDTO : AuditData
     {
-        public string Id { get; set; }
         public string? SOWRequirement { get; set; }
 
         public string? Employee { get; set; }
-
-        public bool IsActive { get; set; }
-
-        public string CreatedBy { get; set; }
-
-        public DateTime CreatedDate { get; set; }
-
-        public string? UpdatedBy { get; set; }
-
-        public DateTime? UpdatedDate { get; set; }
     }
 }

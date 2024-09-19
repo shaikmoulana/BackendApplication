@@ -71,7 +71,7 @@ namespace DataServices.Data
 
             modelBuilder.Entity<EmployeeTechnology>()
             .HasOne(et => et.Employee)
-            .WithMany(t => t.EmployeeTechnology)
+            .WithMany(t => t.Technology)
             .HasForeignKey(et => et.EmployeeID);
 
 

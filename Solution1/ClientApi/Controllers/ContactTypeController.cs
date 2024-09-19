@@ -49,7 +49,7 @@ namespace ClientApi.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Director, Project Manager")]
-        public async Task<ActionResult<ContactType>> Add([FromBody] ContactTypeDTO _object)
+        public async Task<ActionResult<ContactType>> Add([FromBody] ContactType _object)
         {
             if (!ModelState.IsValid)
             {
@@ -75,7 +75,7 @@ namespace ClientApi.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin, Director, Project Manager, Team Lead")]
-        public async Task<IActionResult> Update(string id, [FromBody] ContactTypeDTO _object)
+        public async Task<IActionResult> Update(string id, [FromBody] ContactType _object)
         {
             if (!ModelState.IsValid)
             {

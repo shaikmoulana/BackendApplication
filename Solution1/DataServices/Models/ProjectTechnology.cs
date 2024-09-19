@@ -50,30 +50,17 @@ using System.Threading.Tasks;
 
 namespace DataServices.Models
 {
-    public class ProjectTechnology
+    public class ProjectTechnology : ProjectTechnologyDTO
     {
-        [Key]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string? ProjectId { get; set; }
         public string? TechnologyId { get; set; }
-        public bool IsActive { get; set; }
-        public string CreatedBy { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public string? UpdatedBy { get; set; }
-        public DateTime? UpdatedDate { get; set; }
         public Project? Project { get; set; }
         public Technology? Technology { get; set; }
     }
-    public class ProjectTechnologyDTO
+    public class ProjectTechnologyDTO : AuditData
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string? Project { get; set; }
         public string? Technology { get; set; }
-        public bool IsActive { get; set; }
-        public string CreatedBy { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public string? UpdatedBy { get; set; }
-        public DateTime? UpdatedDate { get; set; }
     }
 }
 

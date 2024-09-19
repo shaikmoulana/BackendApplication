@@ -9,52 +9,11 @@ using DataServices.Models;
 
 namespace DataServices.Models
 {
-    public class Employee
+    public class Employee : EmployeeDTO
     {
-
-        [Key]
-        [Required]
-        [StringLength(36)]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
-
-        [Required]
-        [StringLength(50)]
-        public string Name { get; set; }
-
         [StringLength(36)]
         public string? DesignationId { get; set; }
-
-        [Required]
-        public string EmployeeID { get; set; }
-
-        [Required]
-        [StringLength(50)]
-        [EmailAddress]
-        public string EmailId { get; set; }
-        public string? DepartmentId { get; set; }
-        public string? ReportingTo { get; set; }
-        public DateTime? JoiningDate { get; set; }
-        public DateTime? RelievingDate { get; set; }
-        public string? Projection { get; set; }
-
-        [Required]
-        public bool IsActive { get; set; }
-
-        [Required]
-        [StringLength(50)]
-        public string CreatedBy { get; set; }
-        [Required]
-        public DateTime CreatedDate { get; set; }
-
-        [StringLength(50)]
-        public string? UpdatedBy { get; set; }
-        public DateTime? UpdatedDate { get; set; }
-
-        public string? Password { get; set; }
-        public string ? Profile {  get; set; }
-        public string PhoneNo { get; set; }
-
-        public string? Role { get; set; }
+        public string? DepartmentId { get; set; }       
         
         [ForeignKey("DesignationId")]
         public Designation Designation { get; set; }
@@ -74,16 +33,26 @@ namespace DataServices.Models
         public ICollection<Project> TechnicalProjectManagerId { get; set; }
         public ICollection<Project> SalesContactId { get; set; }
         public ICollection<Project> PMOId { get; set; }
-        public ICollection<EmployeeTechnology> EmployeeTechnology { get; set; }
+        public ICollection<EmployeeTechnology> Technology { get; set; }
 
     }
 
-    public class EmployeeDTO
+    public class EmployeeDTO : AuditData
     {
-        public string Id { get; set; }
+
+        [Required]
+        [StringLength(50)]
+
         public string Name { get; set; }
+        [StringLength(36)]
+
         public string? Designation { get; set; }
+        [Required]
+
         public string EmployeeID { get; set; }
+        [Required]
+        [StringLength(50)]
+        [EmailAddress]
         public string EmailId { get; set; }
         public string? Department { get; set; }
         public string[] Technology {  get; set; } 
@@ -91,12 +60,6 @@ namespace DataServices.Models
         public DateTime? JoiningDate { get; set; }
         public DateTime? RelievingDate { get; set; }
         public string? Projection { get; set; }
-        public bool IsActive { get; set; }
-        public string CreatedBy { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public string? UpdatedBy { get; set; }
-        public DateTime? UpdatedDate { get; set; }
-
         public string? Password { get; set; }
         public string? Profile { get; set; }
         public string PhoneNo { get; set; }

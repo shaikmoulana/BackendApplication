@@ -47,7 +47,7 @@ namespace BlogsApi.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Director, Project Manager")]
-        public async Task<ActionResult<Blogs>> Add([FromBody] BlogsDTO _object)
+        public async Task<ActionResult<BlogsDTO>> Add([FromBody] BlogsDTO _object)
         {
             if (!ModelState.IsValid)
             {
