@@ -24,6 +24,9 @@ namespace DataServices.Models
         [ForeignKey("Role")]
         public Role Roles { get; set; }
 
+        [ForeignKey("ReportingTo")]
+        public Employee? ReportingToEmployee { get; set; }
+
         public ICollection<Blogs> Blog  { get; set; }
         public ICollection<Client> Client { get; set; }
         public ICollection<Interviews> Interviews { get; set; }
@@ -34,6 +37,7 @@ namespace DataServices.Models
         public ICollection<Project> SalesContactId { get; set; }
         public ICollection<Project> PMOId { get; set; }
         public ICollection<EmployeeTechnology> Technology { get; set; }
+        public ICollection<Employee> Subordinates { get; set; }
 
     }
 

@@ -20,6 +20,7 @@ namespace EmployeeApi.Services
                 .Include(e => e.Department)
                 .Include(e => e.Designation)
                 .Include(e => e.Roles)
+                .Include(e => e.ReportingToEmployee)
                 .ToListAsync();
 
             var empDtos = employees.Select(employee => new EmployeeDTO
@@ -30,7 +31,7 @@ namespace EmployeeApi.Services
                 EmployeeID = employee.EmployeeID,
                 EmailId = employee.EmailId,
                 Department = employee.Department?.Name,
-                ReportingTo = employee.ReportingTo,
+                ReportingTo = employee.ReportingToEmployee?.Name,
                 JoiningDate = employee.JoiningDate,
                 RelievingDate = employee.RelievingDate,
                 Projection = employee.Projection,
@@ -53,6 +54,7 @@ namespace EmployeeApi.Services
                   .Include(e => e.Department)
                   .Include(e => e.Designation)
                   .Include(e => e.Roles)
+                  .Include(e => e.ReportingToEmployee)
                   .FirstOrDefaultAsync(e => e.Id == id);
 
             if (employee == null) return null;
@@ -65,7 +67,7 @@ namespace EmployeeApi.Services
                 EmployeeID = employee.EmployeeID,
                 EmailId = employee.EmailId,
                 Department = employee.Department?.Name,
-                ReportingTo = employee.ReportingTo,
+                ReportingTo = employee.ReportingToEmployee?.Name,
                 JoiningDate = employee.JoiningDate,
                 RelievingDate = employee.RelievingDate,
                 Projection = employee.Projection,

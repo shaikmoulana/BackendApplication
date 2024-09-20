@@ -54,6 +54,11 @@ namespace DataServices.Data
             .WithMany(d => d.Employee)
             .HasForeignKey(e => e.Role);
 
+            modelBuilder.Entity<Employee>()
+            .HasOne(e => e.ReportingToEmployee)
+            .WithMany(d => d.Subordinates)
+            .HasForeignKey(e => e.ReportingTo);    
+
 
             //----------4th table Technology------------------------------------
             modelBuilder.Entity<Technology>()
