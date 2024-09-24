@@ -1,5 +1,8 @@
 # Ignore bin and obj directories
 bin/
 obj/
-.vs/
+../.vs/
 log/
+.vs/
+Properties/
+.vs
