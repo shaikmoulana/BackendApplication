@@ -6,7 +6,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <_PublishTargetUrl>C:\inetpub\wwwroot\Publications\SOW_API_Files</_PublishTargetUrl>
-    <History>True|2024-09-11T10:01:23.1623692Z;</History>
+    <History>False|2024-09-17T14:23:24.1213170Z;True|2024-09-11T15:31:23.1623692+05:30;</History>
     <LastFailureDetails />
   </PropertyGroup>
   <ItemGroup>

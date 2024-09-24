@@ -3,20 +3,5 @@
 ################################################################################
 
 /.vs
-/Solution1/AuthApi/Properties/PublishProfiles/FolderProfile.pubxml.user
-/Solution1/BlogsApi/Properties/PublishProfiles/FolderProfile.pubxml.user
-/Solution1/ClientApi/Properties/PublishProfiles/FolderProfile.pubxml.user
-/Solution1/DepartmentApi/Properties/PublishProfiles/FolderProfile3.pubxml.user
-/Solution1/DepartmentApi/DepartmentApi.csproj.user
-/Solution1/ClientApi/ClientApi.csproj.user
-/Solution1/BlogsApi/BlogsApi.csproj.user
-/Solution1/AuthApi/AuthApi.csproj.user
-/Solution1/DesignationApi/Properties/PublishProfiles/FolderProfile.pubxml.user
-/Solution1/DesignationApi/DesignationApi.csproj.user
-/Solution1/EmployeeApi/Properties/PublishProfiles/FolderProfile.pubxml.user
-/Solution1/EmployeeApi/EmployeeApi.csproj.user
-/Solution1/InterviewApi/Properties/PublishProfiles/FolderProfile.pubxml.user
-/Solution1/InterviewApi/InterviewApi.csproj.user
-/Solution1/ProjectApi/Properties/PublishProfiles/FolderProfile.pubxml.user
-/Solution1/RoleApi/RoleApi.csproj.user
-*.cs
+/Solution1/*/Properties
+/Solution1/*/*.csproj.user

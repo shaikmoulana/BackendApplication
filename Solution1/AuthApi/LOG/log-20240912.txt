@@ -1,3 +1,0 @@
-{Timestamp:yyyy-MM-dd HH🇲🇲ss} [WRN] Failed to determine the https port for redirect.
-{Timestamp:yyyy-MM-dd HH🇲🇲ss} [INF] Begin GenerateToken method for user: employee11@miraclesoft.com
-{Timestamp:yyyy-MM-dd HH🇲🇲ss} [INF] End  GenerateToken method.
