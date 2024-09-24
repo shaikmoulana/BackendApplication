@@ -172,18 +172,18 @@ namespace DataServices.Data
                 .HasForeignKey(c => c.ClientId);
 
             modelBuilder.Entity<Project>()
-                .HasOne(c => c.TechnicalProjectManagerId)
-                .WithMany(c => c.TechnicalProjectManagerId)
+                .HasOne(c => c.TechnicalProjectManagers)
+                .WithMany(c => c.TechnicalProjects)
                 .HasForeignKey(c => c.TechnicalProjectManager);
 
             modelBuilder.Entity<Project>()
-                .HasOne(c => c.SalesContactId)
-                .WithMany(c => c.SalesContactId)
+                .HasOne(c => c.SalesContacts)
+                .WithMany(c => c.SalesProjects)
                 .HasForeignKey(c => c.SalesContact);
 
             modelBuilder.Entity<Project>()
-                .HasOne(c => c.PMOId)
-                .WithMany(c => c.PMOId)
+                .HasOne(c => c.PMOs)
+                .WithMany(c => c.PMOProjects)
                 .HasForeignKey(c => c.PMO);
 
             //Foreign key relation for ProjectTechnology model class
@@ -202,12 +202,12 @@ namespace DataServices.Data
 
             modelBuilder.Entity<ProjectTechnology>()
                .HasOne(c => c.Project)
-               .WithMany(c => c.ProjectTechnologies)
+               .WithMany(c => c.Technology)
                .HasForeignKey(c => c.ProjectId);
 
             modelBuilder.Entity<ProjectTechnology>()
-                .HasOne(c => c.Technology)
-                .WithMany(c => c.ProjectTechnologies)
+                .HasOne(c => c.Technologies)
+                .WithMany(c => c.ProjectTechnology)
                 .HasForeignKey(c => c.TechnologyId);
 
         }

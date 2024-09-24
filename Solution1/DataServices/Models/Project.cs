@@ -9,17 +9,20 @@ using System.Threading.Tasks;
 
 namespace DataServices.Models
 {
-    [Table("TblProject")]
     public class Project : ProjectDTO
     {
         public string ClientId { get; set; }
+        [ForeignKey("ClientId")]
         public Client? Client { get; set; }
-        public Employee? TechnicalProjectManagerId { get; set; }
-        public Employee? SalesContactId { get; set; }
-        public Employee? PMOId { get; set; }
+        [ForeignKey("TechnicalProjectManager")]
+        public Employee? TechnicalProjectManagers { get; set; }
+        [ForeignKey("SalesContact")]
+        public Employee? SalesContacts { get; set; }
+        [ForeignKey("PMO")]
+        public Employee? PMOs { get; set; }
         public ICollection<SOW> SOW { get; set; }
-        public ICollection<ProjectEmployee>? ProjectEmployees { get; set; }
-        public ICollection<ProjectTechnology>? ProjectTechnologies { get; set; }
+        public ICollection<ProjectEmployee> ProjectEmployees { get; set; }
+        public ICollection<ProjectTechnology> Technology { get; set; }
     }
     public class ProjectDTO : AuditData
     {

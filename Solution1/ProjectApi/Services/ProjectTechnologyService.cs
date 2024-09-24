@@ -21,7 +21,7 @@ namespace ProjectApi.Services
         {
             var projectTechnologies = await _context.TblProjectTechnology
                 .Include(p => p.Project)
-                .Include(p => p.Technology)
+                .Include(p => p.Technologies)
                 .ToListAsync();
 
             var projectTechnology = new List<ProjectTechnologyDTO>();
@@ -32,7 +32,7 @@ namespace ProjectApi.Services
                 {
                     Id = item.Id,
                     Project = item.Project?.ProjectName,
-                    Technology = item.Technology?.Name,
+                    Technology = item.Technologies?.Name,
                     IsActive = item.IsActive,
                     CreatedBy = item.CreatedBy,
                     CreatedDate = item.CreatedDate,
@@ -58,7 +58,7 @@ namespace ProjectApi.Services
             {
                 Id = projectTechnology.Id,
                 Project = projectTechnology.Project?.ProjectName,
-                Technology = projectTechnology.Technology?.Name,
+                Technology = projectTechnology.Technologies?.Name,
                 IsActive = projectTechnology.IsActive,
                 CreatedBy = projectTechnology.CreatedBy,
                 CreatedDate = projectTechnology.CreatedDate,

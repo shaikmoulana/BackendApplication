@@ -33,9 +33,9 @@ namespace DataServices.Models
         public ICollection<ProjectEmployee> ProjectEmployees { get; set; }
         public ICollection<SOWProposedTeam> SOWProposedTeam { get; set; }
         public ICollection<Webinars> Webinars { get; set; }
-        public ICollection<Project> TechnicalProjectManagerId { get; set; }
-        public ICollection<Project> SalesContactId { get; set; }
-        public ICollection<Project> PMOId { get; set; }
+        public ICollection<Project> TechnicalProjects{ get; set; }
+        public ICollection<Project> SalesProjects { get; set; }
+        public ICollection<Project> PMOProjects { get; set; }
         public ICollection<EmployeeTechnology> Technology { get; set; }
         public ICollection<Employee> Subordinates { get; set; }
 
