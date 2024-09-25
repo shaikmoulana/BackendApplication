@@ -25,7 +25,14 @@ namespace DesignationApi.Controllers
         {
             _logger.LogInformation("Fetching all");
             var data = await _Service.GetAll();
-            return Ok(data);
+            if (User.IsInRole("Admin"))
+            {
+                return Ok(data); // Admin can see all data
+            }
+            else
+            {
+                return Ok(data.Where(d => d.IsActive)); // Non-admins see only active data
+            }
         }
 
         [HttpGet("{id}")]
@@ -41,7 +48,26 @@ namespace DesignationApi.Controllers
                 return NotFound();
             }
 
-            return Ok(data);
+            if (data == null)
+            {
+                _logger.LogWarning("Designation with id: {Id} not found", id);
+                return NotFound();
+            }
+
+            // Check if the logged-in user has the "Admin" role
+            if (User.IsInRole("Admin"))
+            {
+                return Ok(data); // Admin can see both active and inactive designations
+            }
+            else if (data.IsActive)
+            {
+                return Ok(data); // Non-admins can only see active designations
+            }
+            else
+            {
+                _logger.LogWarning("Designation with id: {Id} is inactive and user does not have admin privileges", id);
+                return Forbid(); // Return forbidden if non-admin tries to access an inactive designation
+            }
         }
 
 
@@ -99,7 +125,7 @@ namespace DesignationApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpPatch("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {

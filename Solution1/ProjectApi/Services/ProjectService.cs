@@ -130,12 +130,7 @@ namespace ProjectApi.Services
             {
                 foreach (var technologyId in projDto.Technology)
                 {
-                    var technology = await _context.TblTechnology.FirstOrDefaultAsync(t => t.Id == technologyId);
-
-                    if (technology == null)
-                    {
-                        throw new KeyNotFoundException($"Technology with ID {technologyId} not found.");
-                    }
+                    var technology = await _context.TblTechnology.FirstOrDefaultAsync(t => t.Id == technologyId) ?? throw new KeyNotFoundException($"Technology with ID {technologyId} not found.");
                     var projectTechnology = new ProjectTechnology
                     {
                         ProjectId = project.Id,
@@ -144,10 +139,8 @@ namespace ProjectApi.Services
 
                     await _context.TblProjectTechnology.AddAsync(projectTechnology);
                 }
-
                 await _context.SaveChangesAsync();
             }
-
             return projDto;
         }
 
