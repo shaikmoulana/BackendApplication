@@ -44,12 +44,6 @@ namespace DesignationApi.Controllers
 
             if (data == null)
             {
-                _logger.LogWarning("with id: {Id} not found", id);
-                return NotFound();
-            }
-
-            if (data == null)
-            {
                 _logger.LogWarning("Designation with id: {Id} not found", id);
                 return NotFound();
             }
@@ -57,16 +51,16 @@ namespace DesignationApi.Controllers
             // Check if the logged-in user has the "Admin" role
             if (User.IsInRole("Admin"))
             {
-                return Ok(data); // Admin can see both active and inactive designations
+                return Ok(data); // Admin can see both active and inactive 
             }
             else if (data.IsActive)
             {
-                return Ok(data); // Non-admins can only see active designations
+                return Ok(data); // Non-admins can only see active data
             }
             else
             {
                 _logger.LogWarning("Designation with id: {Id} is inactive and user does not have admin privileges", id);
-                return Forbid(); // Return forbidden if non-admin tries to access an inactive designation
+                return Forbid(); // Return forbidden if non-admin tries to access an inactive 
             }
         }
 

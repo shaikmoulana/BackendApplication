@@ -23,38 +23,35 @@ namespace SOWApi.Services
         public async Task<IEnumerable<SOWDTO>> GetAll()
         {
             var sows = await _context.TblSOW
-                .Include(c => c.Clients)
-                .Include(t => t.Project)
+                .Include(c => c.SowClients)
+                .Include(t => t.SowProjects)
                 .Include(s => s.SOWStatus)
                 .ToListAsync();
 
-            var sowDto = new List<SOWDTO>();
-            foreach (var item in sows)
-            {
-                sowDto.Add(new SOWDTO
-                {
-                    Id = item.Id,
-                    Client = item.Clients?.Name,
-                    Project = item.Project?.ProjectName,
-                    PreparedDate = item.PreparedDate,
-                    SubmittedDate = item.SubmittedDate,
-                    Status = item.SOWStatus?.Status,
-                    Comments = item.Comments,
-                    IsActive = item.IsActive,
-                    CreatedBy = item.CreatedBy,
-                    CreatedDate = item.CreatedDate,
-                    UpdatedBy = item.UpdatedBy,
-                    UpdatedDate = item.UpdatedDate
-                });
-            }
-            return sowDto;
+            var sowDtos = sows.Select(sow=> new SOWDTO
+            { 
+                    Id = sow.Id,
+                    Client = sow.SowClients?.Name,
+                    Project = sow.SowProjects?.ProjectName,
+                    PreparedDate = sow.PreparedDate,
+                    SubmittedDate = sow.SubmittedDate,
+                    Status = sow.SOWStatus?.Status,
+                    Comments = sow.Comments,
+                    IsActive = sow.IsActive,
+                    CreatedBy = sow.CreatedBy,
+                    CreatedDate = sow.CreatedDate,
+                    UpdatedBy = sow.UpdatedBy,
+                    UpdatedDate = sow.UpdatedDate
+                }).ToList();
+          
+            return sowDtos;
         }
 
         public async Task<SOWDTO> Get(string id)
         {
             var sows = await _context.TblSOW
-                .Include(c => c.Clients)
-                .Include(t => t.Project)
+                .Include(c => c.SowClients)
+                .Include(t => t.SowProjects)
                 .Include(s => s.SOWStatus)
                 .FirstOrDefaultAsync(t => t.Id == id);
             if (sows == null) return null;
@@ -62,8 +59,8 @@ namespace SOWApi.Services
             return new SOWDTO
             {
                 Id = sows.Id,
-                Client = sows.Clients?.Name,
-                Project = sows.Project?.ProjectName,
+                Client = sows.SowClients?.Name,
+                Project = sows.SowProjects?.ProjectName,
                 PreparedDate = sows.PreparedDate,
                 SubmittedDate = sows.SubmittedDate,
                 Status = sows.SOWStatus?.Status,

@@ -4,6 +4,7 @@ using EmployeeApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EmployeeApi.Controllers
 {
@@ -28,7 +29,14 @@ namespace EmployeeApi.Controllers
         {
             _logger.LogInformation("Fetching all employees");
             var employees = await _employeeService.GetAll();
-            return Ok(employees);
+            if (User.IsInRole("Admin"))
+            {
+                return Ok(employees); // Admin can see all data
+            }
+            else
+            {
+                return Ok(employees.Where(d => d.IsActive)); // Non-admins see only active data
+            }
         }
 
         [HttpGet("{id}")]
@@ -43,8 +51,20 @@ namespace EmployeeApi.Controllers
                 _logger.LogWarning("Employee with id: {Id} not found", id);
                 return NotFound();
             }
-
-            return Ok(employee);
+            // Check if the logged-in user has the "Admin" role
+            if (User.IsInRole("Admin"))
+            {
+                return Ok(employee); // Admin can see both active and inactive 
+            }
+            else if (employee.IsActive)
+            {
+                return Ok(employee); // Non-admins can only see active data
+            }
+            else
+            {
+                _logger.LogWarning("Employee with id: {Id} is inactive and user does not have admin privileges", id);
+                return Forbid(); // Return forbidden if non-admin tries to access an inactive 
+            }
         }
 
         [HttpPost]
@@ -100,7 +120,7 @@ namespace EmployeeApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpPatch("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {

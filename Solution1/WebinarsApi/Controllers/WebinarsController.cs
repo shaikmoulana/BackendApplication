@@ -25,7 +25,14 @@ namespace WebinarsApi.Controllers
         {
             _logger.LogInformation("Fetching all");
             var data = await _Service.GetAll();
-            return Ok(data);
+            if (User.IsInRole("Admin"))
+            {
+                return Ok(data); // Admin can see all data
+            }
+            else
+            {
+                return Ok(data.Where(d => d.IsActive)); // Non-admins see only active data
+            }
         }
 
         [HttpGet("{id}")]
@@ -41,7 +48,20 @@ namespace WebinarsApi.Controllers
                 return NotFound();
             }
 
-            return Ok(data);
+            // Check if the logged-in user has the "Admin" role
+            if (User.IsInRole("Admin"))
+            {
+                return Ok(data); // Admin can see both active and inactive 
+            }
+            else if (data.IsActive)
+            {
+                return Ok(data); // Non-admins can only see active data
+            }
+            else
+            {
+                _logger.LogWarning("Webinar with id: {Id} is inactive and user does not have admin privileges", id);
+                return Forbid(); // Return forbidden if non-admin tries to access an inactive 
+            }
         }
 
 
@@ -103,7 +123,7 @@ namespace WebinarsApi.Controllers
 
         }
 
-        [HttpDelete("{id}")]
+        [HttpPatch("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {

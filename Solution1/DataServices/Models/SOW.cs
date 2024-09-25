@@ -14,9 +14,9 @@ namespace DataServices.Models
         public string? ProjectId { get; set; }
 
         [ForeignKey("ClientId")]
-        public Client Clients { get; set; }
+        public Client SowClients { get; set; }
         [ForeignKey("ProjectId")]
-        public Project Project { get; set; }
+        public Project SowProjects { get; set; }
         [ForeignKey("Status")]
         public SOWStatus SOWStatus { get; set; }
         public ICollection<SOWRequirement> SOWRequirement { get; set; }

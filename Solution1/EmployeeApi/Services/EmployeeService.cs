@@ -8,10 +8,12 @@ namespace EmployeeApi.Services
     public class EmployeeService : IEmployeeService
     {
         private readonly DataBaseContext _context;
+        private readonly IRepository<Employee> _repository;
 
-        public EmployeeService(DataBaseContext context)
+        public EmployeeService(DataBaseContext context, IRepository<Employee> repository)
         {
             _context = context;
+            _repository = repository;
         }
 
         public async Task<IEnumerable<EmployeeDTO>> GetAll()
@@ -224,12 +226,19 @@ namespace EmployeeApi.Services
 
         public async Task<bool> Delete(string id)
         {
-            var employee = await _context.TblEmployee.FindAsync(id);
-            if (employee == null) return false;
+            /*            var employee = await _context.TblEmployee.FindAsync(id);
+                        if (employee == null) return false;
+                        _context.TblEmployee.Remove(employee);
+                        await _context.SaveChangesAsync();
+                        return true;*/
 
-            _context.TblEmployee.Remove(employee);
-            await _context.SaveChangesAsync();
-
+            var existingData = await _repository.Get(id);
+            if (existingData == null)
+            {
+                throw new ArgumentException($"with ID {id} not found.");
+            }
+            existingData.IsActive = false; // Soft delete
+            await _repository.Update(existingData); // Save changes
             return true;
         }
     }

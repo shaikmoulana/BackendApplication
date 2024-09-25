@@ -139,7 +139,9 @@ namespace EmployeeApi.Services
             }
 
             // Call repository to delete the employee
-            return await _repository.Delete(id);
+            existingEmployeeTechnology.IsActive = false; // Soft delete
+            await _repository.Update(existingEmployeeTechnology); // Save changes
+            return true;
         }
 
     }

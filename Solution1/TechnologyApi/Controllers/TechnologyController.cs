@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TechnologyApi.Services;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TechnologyApi.Controllers
 {
@@ -27,7 +28,14 @@ namespace TechnologyApi.Controllers
         {
             _logger.LogInformation("Fetching all technologies");
             var technologies = await _technologyService.GetAll();
-            return Ok(technologies);
+            if (User.IsInRole("Admin"))
+            {
+                return Ok(technologies); // Admin can see all data
+            }
+            else
+            {
+                return Ok(technologies.Where(d => d.IsActive)); // Non-admins see only active data
+            }
         }
 
         [HttpGet("{id}")]
@@ -43,7 +51,20 @@ namespace TechnologyApi.Controllers
                 return NotFound();
             }
 
-            return Ok(technology);
+            // Check if the logged-in user has the "Admin" role
+            if (User.IsInRole("Admin"))
+            {
+                return Ok(technology); // Admin can see both active and inactive 
+            }
+            else if (technology.IsActive)
+            {
+                return Ok(technology); // Non-admins can only see active data
+            }
+            else
+            {
+                _logger.LogWarning("Technology with id: {Id} is inactive and user does not have admin privileges", id);
+                return Forbid(); // Return forbidden if non-admin tries to access an inactive 
+            }
         }
 
         [HttpPost]
@@ -101,7 +122,7 @@ namespace TechnologyApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpPatch("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteTechnology(string id)
         {

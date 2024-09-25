@@ -20,7 +20,7 @@ namespace DataServices.Models
         public Employee? SalesContacts { get; set; }
         [ForeignKey("PMO")]
         public Employee? PMOs { get; set; }
-        public ICollection<SOW> SOW { get; set; }
+        public ICollection<SOW> SOWs { get; set; }
         public ICollection<ProjectEmployee> ProjectEmployees { get; set; }
         public ICollection<ProjectTechnology> Technology { get; set; }
     }

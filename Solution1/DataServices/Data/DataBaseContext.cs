@@ -96,18 +96,18 @@ namespace DataServices.Data
             //----------13th SOW table------------------------------------
 
             modelBuilder.Entity<SOW>()
-                        .HasOne(pt => pt.Clients)
-                        .WithMany(c => c.SOW)
+                        .HasOne(pt => pt.SowClients)
+                        .WithMany(c => c.SOWs)
                         .HasForeignKey(pt => pt.ClientId);
 
             modelBuilder.Entity<SOW>()
-                        .HasOne(pt => pt.Project)
-                        .WithMany(c => c.SOW)
+                        .HasOne(pt => pt.SowProjects)
+                        .WithMany(c => c.SOWs)
                         .HasForeignKey(pt => pt.ProjectId);
 
             modelBuilder.Entity<SOW>()
                         .HasOne(pt => pt.SOWStatus)
-                        .WithMany(c => c.SOW)
+                        .WithMany(c => c.SOWs)
                         .HasForeignKey(pt => pt.Status);
 
             //----------14th SOWRequirement table------------------------------------

@@ -106,8 +106,10 @@ namespace DepartmentApi.Services
                 throw new ArgumentException($"with ID {id} not found.");
             }
 
-            // Call repository to delete the technology
-            return await _repository.Delete(id);
+            // Call repository to delete the Department
+            existingData.IsActive = false; // Soft delete
+            await _repository.Update(existingData); // Save changes
+            return true;
         }
     }
 }

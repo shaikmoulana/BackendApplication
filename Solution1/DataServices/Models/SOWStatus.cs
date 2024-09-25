@@ -8,7 +8,7 @@ namespace DataServices.Models
 {
     public class SOWStatus : SOWStatusDTO
     {
-        public ICollection<SOW> SOW { get; set; }
+        public ICollection<SOW> SOWs { get; set; }
 
     }
     public class SOWStatusDTO : AuditData

@@ -1,5 +1,6 @@
 ﻿using DataServices.Data;
 using DataServices.Models;
+using DataServices.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,10 +10,12 @@ namespace TechnologyApi.Services
     public class TechnologyService : ITechnologyService
     {
         private readonly DataBaseContext _context;
+        private readonly IRepository<Technology> _repository;
 
-        public TechnologyService(DataBaseContext context)
+        public TechnologyService(DataBaseContext context, IRepository<Technology> repository)
         {
             _context = context;
+            _repository = repository;
         }
 
         public async Task<IEnumerable<TechnologyDTO>> GetAll()
@@ -113,12 +116,20 @@ namespace TechnologyApi.Services
 
         public async Task<bool> Delete(string id)
         {
-            var technology = await _context.TblTechnology.FindAsync(id);
+            /*var technology = await _context.TblTechnology.FindAsync(id);
             if (technology == null)
                 return false;
-
             _context.TblTechnology.Remove(technology);
             await _context.SaveChangesAsync();
+            return true;*/
+
+            var existingData = await _repository.Get(id);
+            if (existingData == null)
+            {
+                throw new ArgumentException($"with ID {id} not found.");
+            }
+            existingData.IsActive = false; // Soft delete
+            await _repository.Update(existingData); // Save changes
             return true;
         }
     }
