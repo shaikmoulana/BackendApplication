@@ -141,15 +141,17 @@ namespace ClientApi.Services
 
         public async Task<bool> Delete(string id)
         {
-            // Check if the technology exists
+            // Check if the client exists
             var existingData = await _repository.Get(id);
             if (existingData == null)
             {
-                throw new ArgumentException($"Technology with ID {id} not found.");
+                throw new ArgumentException($"Client with ID {id} not found.");
             }
 
             // Call repository to delete the technology
-            return await _repository.Delete(id);
+            existingData.IsActive = false; // Soft delete
+            await _repository.Update(existingData); // Save changes
+            return true;
         }
     }
 }

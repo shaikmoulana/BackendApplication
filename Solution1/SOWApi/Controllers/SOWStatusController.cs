@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SOWApi.Services;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SOWAPI.Controllers
 {
@@ -25,7 +26,14 @@ namespace SOWAPI.Controllers
         {
             _logger.LogInformation("Fetching all SOWStatus data");
             var sowStatus = await _sowStatusService.GetAll();
-            return Ok(sowStatus);
+            if (User.IsInRole("Admin"))
+            {
+                return Ok(sowStatus); // Admin can see all data
+            }
+            else
+            {
+                return Ok(sowStatus.Where(d => d.IsActive)); // Non-admins see only active data
+            }
         }
 
         [HttpGet("{id}")]
@@ -41,7 +49,20 @@ namespace SOWAPI.Controllers
                 return NotFound();
             }
 
-            return Ok(sowStatus);
+            // Check if the logged-in user has the "Admin" role
+            if (User.IsInRole("Admin"))
+            {
+                return Ok(sowStatus); // Admin can see both active and inactive 
+            }
+            else if (sowStatus.IsActive)
+            {
+                return Ok(sowStatus); // Non-admins can only see active data
+            }
+            else
+            {
+                _logger.LogWarning("Department with id: {Id} is inactive and user does not have admin privileges", id);
+                return Forbid(); // Return forbidden if non-admin tries to access an inactive 
+            }
         }
 
 
@@ -107,7 +128,7 @@ namespace SOWAPI.Controllers
             return Ok(existingsow);
         }
 
-        [HttpDelete("{id}")]
+        [HttpPatch("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {

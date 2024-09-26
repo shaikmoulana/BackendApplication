@@ -9,10 +9,12 @@ namespace ProjectApi.Services
     public class ProjectService : IProjectService
     {
         private readonly DataBaseContext _context;
+        private readonly IRepository<Project> _repository;
 
-        public ProjectService(DataBaseContext context)
+        public ProjectService(DataBaseContext context, IRepository<Project> repository)
         {
             _context = context;
+            _repository = repository;
         }
 
         public async Task<IEnumerable<ProjectDTO>> GetAll()
@@ -227,15 +229,14 @@ namespace ProjectApi.Services
 
         public async Task<bool> Delete(string id)
         {
-            // Check if the technology exists
-            var existingData = await _context.TblProject.FindAsync(id);
+            var existingData = await _repository.Get(id);
             if (existingData == null)
             {
-                return false;
+                throw new ArgumentException($"with ID {id} not found.");
             }
-            _context.TblProject.Remove(existingData);
-            await _context.SaveChangesAsync();
 
+            existingData.IsActive = false; // Soft delete
+            await _repository.Update(existingData); // Save changes
             return true;
         }
     }

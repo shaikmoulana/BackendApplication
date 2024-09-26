@@ -3,6 +3,7 @@ using InterviewApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -23,8 +24,15 @@ public class InterviewStatusController : ControllerBase
     public async Task<ActionResult<IEnumerable<InterviewStatusDTO>>> GetAll()
     {
         _logger.LogInformation("Fetching all");
-        var interviewStatus = await _Service.GetAll();
-        return Ok(interviewStatus);
+        var data = await _Service.GetAll();
+        if (User.IsInRole("Admin"))
+        {
+            return Ok(data); // Admin can see all data
+        }
+        else
+        {
+            return Ok(data.Where(d => d.IsActive)); // Non-admins see only active data
+        }
     }
 
     [HttpGet("{id}")]
@@ -32,8 +40,21 @@ public class InterviewStatusController : ControllerBase
     public async Task<ActionResult<InterviewStatusDTO>> Get(string id)
     {
         _logger.LogInformation("Fetching with id: {id}", id);
-        var interviewStatus = await _Service.Get(id);
-        return Ok(interviewStatus);
+        var data = await _Service.Get(id);
+        // Check if the logged-in user has the "Admin" role
+        if (User.IsInRole("Admin"))
+        {
+            return Ok(data); // Admin can see both active and inactive 
+        }
+        else if (data.IsActive)
+        {
+            return Ok(data); // Non-admins can only see active data
+        }
+        else
+        {
+            _logger.LogWarning("Department with id: {Id} is inactive and user does not have admin privileges", id);
+            return Forbid(); // Return forbidden if non-admin tries to access an inactive 
+        }
     }
 
 
@@ -94,7 +115,7 @@ public class InterviewStatusController : ControllerBase
     }
 
 
-    [HttpDelete("{id}")]
+    [HttpPatch("{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(string id)
     {

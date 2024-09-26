@@ -132,15 +132,14 @@ namespace SOWApi.Services
 
         public async Task<bool> Delete(string id)
         {
-            // Check if the technology exists
             var existingsowproposedteam = await _repository.Get(id);
             if (existingsowproposedteam == null)
             {
                 throw new ArgumentException($"Technology with ID {id} not found.");
             }
-
-            // Call repository to delete the technology
-            return await _repository.Delete(id);
+            existingsowproposedteam.IsActive = false; // Soft delete
+            await _repository.Update(existingsowproposedteam); // Save changes
+            return true;
         }
     }
 }

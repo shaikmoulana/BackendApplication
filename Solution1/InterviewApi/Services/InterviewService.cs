@@ -168,7 +168,15 @@ namespace InterviewApi.Services
 
         public async Task<bool> Delete(string id)
         {
-            return await _repository.Delete(id);
+            var existingData = await _repository.Get(id);
+            if (existingData == null)
+            {
+                throw new ArgumentException($"with ID {id} not found.");
+            }
+
+            existingData.IsActive = false; // Soft delete
+            await _repository.Update(existingData); // Save changes
+            return true;
         }
     }
 }

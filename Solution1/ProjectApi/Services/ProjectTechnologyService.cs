@@ -137,15 +137,14 @@ namespace ProjectApi.Services
 
         public async Task<bool> Delete(string id)
         {
-            // Check if the technology exists
             var existingData = await _repository.Get(id);
             if (existingData == null)
             {
                 throw new ArgumentException($"with ID {id} not found.");
             }
-
-            // Call repository to delete the technology
-            return await _repository.Delete(id);
+            existingData.IsActive = false; // Soft delete
+            await _repository.Update(existingData); // Save changes
+            return true;
         }
     }
 }

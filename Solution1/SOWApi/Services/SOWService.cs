@@ -169,8 +169,9 @@ namespace SOWApi.Services
                 throw new ArgumentException($"SOW with ID {id} not found.");
             }
 
-            // Call repository to delete the SOW
-            return await _repository.Delete(id);
+            existingsow.IsActive = false; // Soft delete
+            await _repository.Update(existingsow); // Save changes
+            return true;
         }
     }
 }

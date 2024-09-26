@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SOWApi.Services;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SOWApi.Controllers
 {
@@ -24,8 +25,15 @@ namespace SOWApi.Controllers
         public async Task<ActionResult<IEnumerable<SOWProposedTeamDTO>>> GetAll()
         {
             _logger.LogInformation("Fetching all SOW");
-            var sowProposedTeam = await _Service.GetAll();
-            return Ok(sowProposedTeam);
+            var data = await _Service.GetAll();
+            if (User.IsInRole("Admin"))
+            {
+                return Ok(data); // Admin can see all data
+            }
+            else
+            {
+                return Ok(data.Where(d => d.IsActive)); // Non-admins see only active data
+            }
         }
 
         [HttpGet("{id}")]
@@ -33,15 +41,28 @@ namespace SOWApi.Controllers
         public async Task<ActionResult<SOWProposedTeamDTO>> Get(string id)
         {
             _logger.LogInformation("Fetching sow with id: {Id}", id);
-            var sowProposedTeam = await _Service.Get(id);
+            var data = await _Service.Get(id);
 
-            if (sowProposedTeam == null)
+            if (data == null)
             {
                 _logger.LogWarning("sow with id: {Id} not found", id);
                 return NotFound();
             }
 
-            return Ok(sowProposedTeam);
+            // Check if the logged-in user has the "Admin" role
+            if (User.IsInRole("Admin"))
+            {
+                return Ok(data); // Admin can see both active and inactive 
+            }
+            else if (data.IsActive)
+            {
+                return Ok(data); // Non-admins can only see active data
+            }
+            else
+            {
+                _logger.LogWarning("Department with id: {Id} is inactive and user does not have admin privileges", id);
+                return Forbid(); // Return forbidden if non-admin tries to access an inactive 
+            }
         }
 
 
@@ -100,7 +121,7 @@ namespace SOWApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpPatch("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {

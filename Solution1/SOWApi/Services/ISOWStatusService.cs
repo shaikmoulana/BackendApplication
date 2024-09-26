@@ -4,10 +4,10 @@ namespace SOWApi.Services
 {
     public interface ISOWStatusService
     {
-        Task<IEnumerable<SOWStatus>> GetAll();
-        Task<SOWStatus> Get(string id);
-        Task<SOWStatus> Add(SOWStatus sowstatus);
-        Task<SOWStatus> Update(SOWStatus sowstatus);
+        Task<IEnumerable<SOWStatusDTO>> GetAll();
+        Task<SOWStatusDTO> Get(string id);
+        Task<SOWStatusDTO> Add(SOWStatusDTO sowstatus);
+        Task<SOWStatusDTO> Update(SOWStatusDTO sowstatus);
         Task<bool> Delete(string id);
     }
 }

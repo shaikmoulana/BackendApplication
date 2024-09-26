@@ -133,15 +133,15 @@ namespace BlogsApi.Services
 
         public async Task<bool> Delete(string id)
         {
-            // Check if the technology exists
+            // Check if the Blogs exists
             var existingData = await _repository.Get(id);
             if (existingData == null)
             {
-                throw new ArgumentException($"Technology with ID {id} not found.");
+                throw new ArgumentException($"Blogs with ID {id} not found.");
             }
-
-            // Call repository to delete the technology
-            return await _repository.Delete(id);
+            existingData.IsActive = false; // Soft delete
+            await _repository.Update(existingData); // Save changes
+            return true;
         }
     }
 }

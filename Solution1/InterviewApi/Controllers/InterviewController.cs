@@ -24,7 +24,14 @@ namespace InterviewApi.Controllers
         {
             _logger.LogInformation("Fetching all employeeTechnology");
             var data = await _service.GetAll();
-            return Ok(data);
+            if (User.IsInRole("Admin"))
+            {
+                return Ok(data); // Admin can see all data
+            }
+            else
+            {
+                return Ok(data.Where(d => d.IsActive)); // Non-admins see only active data
+            }
         }
 
         [HttpGet("{id}")]
@@ -40,7 +47,20 @@ namespace InterviewApi.Controllers
                 return NotFound();
             }
 
-            return Ok(data);
+            // Check if the logged-in user has the "Admin" role
+            if (User.IsInRole("Admin"))
+            {
+                return Ok(data); // Admin can see both active and inactive 
+            }
+            else if (data.IsActive)
+            {
+                return Ok(data); // Non-admins can only see active data
+            }
+            else
+            {
+                _logger.LogWarning("Interview with id: {Id} is inactive and user does not have admin privileges", id);
+                return Forbid(); // Return forbidden if non-admin tries to access an inactive 
+            }
         }
 
         [HttpPost]
@@ -75,17 +95,17 @@ namespace InterviewApi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Invalid model state for updating employee");
+                _logger.LogWarning("Invalid model state for updating interview");
                 return BadRequest(ModelState);
             }
 
             if (id != _object.Id)
             {
-                _logger.LogWarning("Employee id: {Id} does not match with the id in the request body", id);
-                return BadRequest("Employee ID mismatch.");
+                _logger.LogWarning("Interview id: {Id} does not match with the id in the request body", id);
+                return BadRequest("Interview ID mismatch.");
             }
 
-            _logger.LogInformation("Updating employee with id: {Id}", id);
+            _logger.LogInformation("Updating interview with id: {Id}", id);
             try
             {
                 await _service.Update(_object);
@@ -98,16 +118,16 @@ namespace InterviewApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpPatch("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
-            _logger.LogInformation("Deleting employee with id: {Id}", id);
+            _logger.LogInformation("Deleting interview with id: {Id}", id);
             var success = await _service.Delete(id);
 
             if (!success)
             {
-                _logger.LogWarning("Employee with id: {Id} not found", id);
+                _logger.LogWarning("Interview with id: {Id} not found", id);
                 return NotFound();
             }
 
