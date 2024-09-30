@@ -91,6 +91,22 @@ namespace EmployeeApi.Controllers
             }
         }
 
+        [HttpPost("uploadFile")]
+        [Authorize(Roles = "Admin, Director, Project Manager")]
+        public async Task<IActionResult> UploadFile(EmployeeProfileDTO employeeProfile)
+        {
+            try
+            {
+                var filePath = await _employeeService.UploadFileAsync(employeeProfile);
+                return Ok(new { message = "Your File is uploaded successfully.", path = filePath });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error uploading file");
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin, Director, Project Manager, Team Lead")]
         public async Task<IActionResult> Update(string id, [FromBody] EmployeeDTO empDto)

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataServices.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace DataServices.Models
 {
@@ -38,6 +39,12 @@ namespace DataServices.Models
         public ICollection<Project> PMOProjects { get; set; }
         public ICollection<EmployeeTechnology> Technology { get; set; }
         public ICollection<Employee> Subordinates { get; set; }
+
+    }
+    public class EmployeeProfileDTO 
+    {
+        public string? Id { get; set; }
+        public IFormFile Profile { get; set; }
 
     }
 

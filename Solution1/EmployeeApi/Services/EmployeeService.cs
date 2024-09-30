@@ -2,6 +2,7 @@
 using DataServices.Models;
 using DataServices.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EmployeeApi.Services
 {
@@ -127,6 +128,13 @@ namespace EmployeeApi.Services
             employee.PhoneNo = empDto.PhoneNo;
             employee.Role = role.Id;
 
+            // Set the Profile property if a file is uploaded
+            if (!string.IsNullOrEmpty(empDto.Profile))
+            {
+                employee.Profile = empDto.Profile;
+            }
+
+
             _context.TblEmployee.Add(employee);
             await _context.SaveChangesAsync();
             empDto.Id = employee.Id;
@@ -146,9 +154,53 @@ namespace EmployeeApi.Services
 
                 await _context.SaveChangesAsync();
             }
-
-            
             return empDto;
+        }
+
+        public async Task<string> UploadFileAsync(EmployeeProfileDTO employeeProfile)
+        {
+            string filePath = "";
+            try
+            {
+                // Check if the file is not empty
+                if (employeeProfile.Profile.Length > 0)
+                {
+                    var file = employeeProfile.Profile;
+                    filePath = Path.GetFullPath($"C:\\Users\\mshaik5\\Desktop\\UploadProfiles\\{file.FileName}");
+
+                    // Save file to the specified path
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    // Update employee's profile if ID is provided
+                    if (!string.IsNullOrEmpty(employeeProfile.Id))
+                    {
+                        var employee = await Get(employeeProfile.Id);
+
+                        if (employee != null)
+                        {
+                            employee.Profile = file.FileName;
+                            await Update(employee);
+                        }
+                    }
+                    else
+                    {
+                        return file.FileName;
+                    }
+                }
+                else
+                {
+                    throw new Exception("The uploaded file is empty.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while uploading the file: " + ex.Message);
+            }
+
+            return filePath;
         }
 
         public async Task<EmployeeDTO> Update(EmployeeDTO empDto)
@@ -195,6 +247,13 @@ namespace EmployeeApi.Services
             employee.Profile = empDto.Profile;
             employee.PhoneNo = empDto.PhoneNo;
             employee.Role = role.Id;
+
+            // Set the Profile property if a file is uploaded
+            if (!string.IsNullOrEmpty(empDto.Profile))
+            {
+                employee.Profile = empDto.Profile;
+            }
+
 
             _context.Entry(employee).State = EntityState.Modified;
 
