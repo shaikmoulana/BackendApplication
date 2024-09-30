@@ -18,20 +18,31 @@ namespace AuthApi.Helpers
             _logger = logger;
             _employeeLoginRepository = employeeLoginRepository;
         }
-
-        public async Task<string> Validate(string emailId, string password)
+        public class AuthResponse
         {
-            string token = string.Empty;
+            public string Token { get; set; }
+            public string Role { get; set; }
+        }
+
+        public async Task<AuthResponse> Validate(string emailId, string password)
+        {
+            AuthResponse authResponse = null;
             bool isValidUser = await _employeeLoginRepository.Validate(emailId, password);
 
             if (isValidUser)
             {
-                // Fetch the role for the authenticated user from the TblRole table
                 string role = await _employeeLoginRepository.GetUserRole(emailId);
-                token = GenerateToken(emailId, role); // Pass the role
+                string token = GenerateToken(emailId, role); 
+                authResponse = new AuthResponse
+                {
+                    Token = token,
+                    Role = role
+                };
             }
-            return token;
+
+            return authResponse;
         }
+
 
         private string GenerateToken(string emailId, string role)
         {

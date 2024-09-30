@@ -16,21 +16,26 @@ namespace AuthApi.Controllers
         {
             _tokenGeneration = tokenGeneration;
         }
-
         [HttpPost]
-        //[HttpGet("GetToken")]
         public async Task<IActionResult> GetToken(string emailId, string password)
         {
-            string token = await _tokenGeneration.Validate(emailId, password);
-            if (!string.IsNullOrEmpty(token))
+            // Use the AuthResponse object to retrieve both the token and the role
+            var authResponse = await _tokenGeneration.Validate(emailId, password);
+            if (authResponse != null && !string.IsNullOrEmpty(authResponse.Token))
             {
-                return Ok(token);
+                // Return both token and role in the response
+                return Ok(new
+                {
+                    Token = authResponse.Token,
+                    Role = authResponse.Role
+                });
             }
             else
             {
                 return Unauthorized("Invalid emailId or password.");
             }
         }
+
 
         [HttpGet]
         [Authorize(Roles = "User,Admin")]  // Both User and Admin can access
