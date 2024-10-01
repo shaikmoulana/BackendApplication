@@ -19,8 +19,8 @@ namespace SOWApi.Services
         public async Task<IEnumerable<SOWProposedTeamDTO>> GetAll()
         {
             var sowProposedTeams = await _context.TblSOWProposedTeam
-               .Include(c => c.SOWRequirements)
-               .Include(t => t.Employees)
+               .Include(c => c.SOWRequirement)
+               .Include(t => t.Employee)
                .ToListAsync();
 
             var sowproposedTeamDto = new List<SOWProposedTeamDTO>();
@@ -29,8 +29,8 @@ namespace SOWApi.Services
                 sowproposedTeamDto.Add(new SOWProposedTeamDTO
                 {
                     Id = item.Id,
-                    SOWRequirement = item.SOWRequirements?.Technologies,
-                    Employee = item.Employees?.Name,
+                    SOWRequirement = item.SOWRequirement?.TeamSize.ToString(),
+                    Employee = item.Employee?.Name,
                     IsActive = item.IsActive,
                     CreatedBy = item.CreatedBy,
                     CreatedDate = item.CreatedDate,
@@ -44,8 +44,8 @@ namespace SOWApi.Services
         public async Task<SOWProposedTeamDTO> Get(string id)
         {
             var sowProposedTeams = await _context.TblSOWProposedTeam
-               .Include(c => c.SOWRequirements)
-               .Include(t => t.Employees)
+               .Include(c => c.SOWRequirement)
+               .Include(t => t.Employee)
                 .FirstOrDefaultAsync(t => t.Id == id);
 
             if (sowProposedTeams == null) return null;
@@ -53,8 +53,8 @@ namespace SOWApi.Services
             return new SOWProposedTeamDTO
             {
                 Id = sowProposedTeams.Id,
-                SOWRequirement = sowProposedTeams.SOWRequirements?.Technologies,
-                Employee = sowProposedTeams.Employees?.Name,
+                SOWRequirement = sowProposedTeams.SOWRequirement?.TeamSize.ToString(),
+                Employee = sowProposedTeams.Employee?.Name,
                 IsActive = sowProposedTeams.IsActive,
                 CreatedBy = sowProposedTeams.CreatedBy,
                 CreatedDate = sowProposedTeams.CreatedDate,
@@ -67,7 +67,7 @@ namespace SOWApi.Services
         {
 
             var sowRequirement = await _context.TblSOWRequirement
-               .FirstOrDefaultAsync(d => d.Technologies == _object.SOWRequirement);
+               .FirstOrDefaultAsync(d => d.TeamSize.ToString() == _object.SOWRequirement);
 
             if (sowRequirement == null)
                 throw new KeyNotFoundException("SowRequirement not found");
@@ -105,7 +105,7 @@ namespace SOWApi.Services
                 throw new KeyNotFoundException("sowProposedTeam not found");
 
             var sowRequirement = await _context.TblSOWRequirement
-               .FirstOrDefaultAsync(d => d.Technologies == _object.SOWRequirement);
+               .FirstOrDefaultAsync(d => d.TeamSize.ToString() == _object.SOWRequirement);
 
             if (sowRequirement == null)
                 throw new KeyNotFoundException("SowRequirement not found");

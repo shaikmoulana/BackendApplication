@@ -23,16 +23,17 @@ namespace SOWApi.Services
         public async Task<IEnumerable<SOWDTO>> GetAll()
         {
             var sows = await _context.TblSOW
-                .Include(c => c.SowClients)
-                .Include(t => t.SowProjects)
+                .Include(c => c.Client)
+                .Include(t => t.Project)
                 .Include(s => s.SOWStatus)
                 .ToListAsync();
 
             var sowDtos = sows.Select(sow=> new SOWDTO
             { 
                     Id = sow.Id,
-                    Client = sow.SowClients?.Name,
-                    Project = sow.SowProjects?.ProjectName,
+                    Title = sow.Title,
+                    Client = sow.Client?.Name,
+                    Project = sow.Project?.ProjectName,
                     PreparedDate = sow.PreparedDate,
                     SubmittedDate = sow.SubmittedDate,
                     Status = sow.SOWStatus?.Status,
@@ -50,8 +51,8 @@ namespace SOWApi.Services
         public async Task<SOWDTO> Get(string id)
         {
             var sows = await _context.TblSOW
-                .Include(c => c.SowClients)
-                .Include(t => t.SowProjects)
+                .Include(c => c.Client)
+                .Include(t => t.Project)
                 .Include(s => s.SOWStatus)
                 .FirstOrDefaultAsync(t => t.Id == id);
             if (sows == null) return null;
@@ -59,8 +60,9 @@ namespace SOWApi.Services
             return new SOWDTO
             {
                 Id = sows.Id,
-                Client = sows.SowClients?.Name,
-                Project = sows.SowProjects?.ProjectName,
+                Title = sows.Title,
+                Client = sows.Client?.Name,
+                Project = sows.Project?.ProjectName,
                 PreparedDate = sows.PreparedDate,
                 SubmittedDate = sows.SubmittedDate,
                 Status = sows.SOWStatus?.Status,
@@ -96,6 +98,7 @@ namespace SOWApi.Services
 
             var sow = new SOW
             {
+                Title = _object.Title,
                 ClientId = client?.Id,
                 ProjectId = project?.Id,
                 PreparedDate = _object.PreparedDate,
@@ -141,7 +144,7 @@ namespace SOWApi.Services
 
             if (status == null)
                 throw new KeyNotFoundException("SalesContact not found");
-
+            sow.Title = _object.Title;
             sow.ClientId = client?.Id;
             sow.ProjectId = project?.Id;
             sow.PreparedDate = _object.PreparedDate;

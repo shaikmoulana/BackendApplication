@@ -1,38 +1,36 @@
 ﻿using DataServices.Data;
 using DataServices.Models;
 using DataServices.Repositories;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace SOWApi.Services
 {
-    public class SOWRequirementService : ISOWRequirementService
+    public class SOWRequirementTechnologyService : ISOWRequirementTechnologyService
     {
-        private readonly IRepository<SOWRequirement> _repository;
+        private readonly IRepository<SOWRequirementTechnology> _repository;
         private readonly DataBaseContext _context;
 
-        public SOWRequirementService(IRepository<SOWRequirement> repository, DataBaseContext context)
+        public SOWRequirementTechnologyService(IRepository<SOWRequirementTechnology> repository, DataBaseContext context)
         {
             _repository = repository;
             _context = context;
         }
 
-        public async Task<IEnumerable<SOWRequirementDTO>> GetAll()
+        public async Task<IEnumerable<SOWRequirementTechnologyDTO>> GetAll()
         {
-            var sowrequirements = await _context.TblSOWRequirement
+            var sowrequirements = await _context.TblSOWRequirementTechnology
                .Include(c => c.SOWs)
-               .Include(t => t.Designation)
+               .Include(t => t.Technology)
                .ToListAsync();
 
-            var sowRequirementDto = new List<SOWRequirementDTO>();
+            var sowRequirementDto = new List<SOWRequirementTechnologyDTO>();
             foreach (var item in sowrequirements)
             {
-                sowRequirementDto.Add(new SOWRequirementDTO
+                sowRequirementDto.Add(new SOWRequirementTechnologyDTO
                 {
                     Id = item.Id,
                     SOW = item.SOWs?.Title,
-                    Designation = item.Designation?.Name,
-                    TeamSize = item.TeamSize,
+                    Technology = item.Technology?.Name,
                     IsActive = item.IsActive,
                     CreatedBy = item.CreatedBy,
                     CreatedDate = item.CreatedDate,
@@ -43,21 +41,20 @@ namespace SOWApi.Services
             return sowRequirementDto;
         }
 
-        public async Task<SOWRequirementDTO> Get(string id)
+        public async Task<SOWRequirementTechnologyDTO> Get(string id)
         {
-            var sowRequirements = await _context.TblSOWRequirement
+            var sowRequirements = await _context.TblSOWRequirementTechnology
                 .Include(c => c.SOWs)
-               .Include(t => t.Designation)
+               .Include(t => t.Technology)
                 .FirstOrDefaultAsync(t => t.Id == id);
 
             if (sowRequirements == null) return null;
 
-            return new SOWRequirementDTO
+            return new SOWRequirementTechnologyDTO
             {
                 Id = sowRequirements.Id,
                 SOW = sowRequirements.SOWs?.Title,
-                Designation = sowRequirements.Designation?.Name,
-                TeamSize = sowRequirements.TeamSize,
+                Technology = sowRequirements.Technology?.Name,
                 IsActive = sowRequirements.IsActive,
                 CreatedBy = sowRequirements.CreatedBy,
                 CreatedDate = sowRequirements.CreatedDate,
@@ -66,7 +63,7 @@ namespace SOWApi.Services
             };
         }
 
-        public async Task<SOWRequirementDTO> Add(SOWRequirementDTO _object)
+        public async Task<SOWRequirementTechnologyDTO> Add(SOWRequirementTechnologyDTO _object)
         {
 
             var sow = await _context.TblSOW
@@ -75,18 +72,17 @@ namespace SOWApi.Services
             if (sow == null)
                 throw new KeyNotFoundException("Sow not found");
 
-            var designation = await _context.TblDesignation
-               .FirstOrDefaultAsync(d => d.Name == _object.Designation);
+            var technology = await _context.TblTechnology
+               .FirstOrDefaultAsync(d => d.Name == _object.Technology);
 
-            if (designation == null)
-                throw new KeyNotFoundException("Designation not found");
+            if (technology == null)
+                throw new KeyNotFoundException("Technology not found");
 
 
-            var sowRequirement = new SOWRequirement
+            var sowRequirement = new SOWRequirementTechnology
             {
-                SOW = sow?.Id,
-                DesignationId = designation?.Id,
-                TeamSize = _object.TeamSize,
+                SOWId = sow?.Id,
+                TechnologyId = technology?.Id,
                 IsActive = _object.IsActive,
                 CreatedBy = _object.CreatedBy,
                 CreatedDate = _object.CreatedDate,
@@ -94,19 +90,19 @@ namespace SOWApi.Services
                 UpdatedDate = _object.UpdatedDate
             };
 
-            _context.TblSOWRequirement.Add(sowRequirement);
+            _context.TblSOWRequirementTechnology.Add(sowRequirement);
             await _context.SaveChangesAsync();
 
             _object.Id = sowRequirement.Id;
             return _object;
         }
 
-        public async Task<SOWRequirementDTO> Update(SOWRequirementDTO _object)
+        public async Task<SOWRequirementTechnologyDTO> Update(SOWRequirementTechnologyDTO _object)
         {
-            var sowRequirement = await _context.TblSOWRequirement.FindAsync(_object.Id);
+            var sowRequirement = await _context.TblSOWRequirementTechnology.FindAsync(_object.Id);
 
             if (sowRequirement == null)
-                throw new KeyNotFoundException("SOWRequirement not found");
+                throw new KeyNotFoundException("SOWRequirementTechnology not found");
 
             var sow = await _context.TblSOW
               .FirstOrDefaultAsync(d => d.Title == _object.SOW);
@@ -114,15 +110,14 @@ namespace SOWApi.Services
             if (sow == null)
                 throw new KeyNotFoundException("Sow not found");
 
-            var designation = await _context.TblDesignation
-               .FirstOrDefaultAsync(d => d.Name == _object.Designation);
+            var technology = await _context.TblTechnology
+               .FirstOrDefaultAsync(d => d.Name == _object.Technology);
 
-            if (designation == null)
-                throw new KeyNotFoundException("Designation not found");
+            if (technology == null)
+                throw new KeyNotFoundException("Technology not found");
 
-            sowRequirement.SOW = sow?.Id;
-            sowRequirement.DesignationId = designation?.Id;
-            sowRequirement.TeamSize = _object.TeamSize;
+            sowRequirement.SOWId = sow?.Id;
+            sowRequirement.TechnologyId = technology?.Id;
             sowRequirement.IsActive = _object.IsActive;
             sowRequirement.CreatedBy = _object.CreatedBy;
             sowRequirement.CreatedDate = _object.CreatedDate;
@@ -142,7 +137,7 @@ namespace SOWApi.Services
             var existingsowrequirement = await _repository.Get(id);
             if (existingsowrequirement == null)
             {
-                throw new ArgumentException($"Technology with ID {id} not found.");
+                throw new ArgumentException($"SOWRequirementTechnology with ID {id} not found.");
             }
             existingsowrequirement.IsActive = false; // Soft delete
             await _repository.Update(existingsowrequirement); // Save changes

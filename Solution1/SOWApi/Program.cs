@@ -35,10 +35,12 @@ builder.Services.AddDbContext<DataBaseContext>(options =>
 builder.Services.AddScoped<IRepository<SOW>, SOWRepository>();
 builder.Services.AddScoped<IRepository<SOWProposedTeam>, SOWProposedTeamRepository>();
 builder.Services.AddScoped<IRepository<SOWRequirement>, SOWRequirementRepository>();
+builder.Services.AddScoped<IRepository<SOWRequirementTechnology>, SOWRequirementTechnologyRepository>();
 builder.Services.AddScoped<IRepository<SOWStatus>, SOWStatusRepository>();
 builder.Services.AddScoped<ISOWService, SOWService>();
 builder.Services.AddScoped<ISOWProposedTeamService, SOWProposedTeamService>();
 builder.Services.AddScoped<ISOWRequirementService, SOWRequirementService>();
+builder.Services.AddScoped<ISOWRequirementTechnologyService, SOWRequirementTechnologyService>();
 builder.Services.AddScoped<ISOWStatusService, SOWStatusService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

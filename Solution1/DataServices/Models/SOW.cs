@@ -14,16 +14,18 @@ namespace DataServices.Models
         public string? ProjectId { get; set; }
 
         [ForeignKey("ClientId")]
-        public Client SowClients { get; set; }
+        public Client Client { get; set; }
         [ForeignKey("ProjectId")]
-        public Project SowProjects { get; set; }
+        public Project Project { get; set; }
         [ForeignKey("Status")]
         public SOWStatus SOWStatus { get; set; }
         public ICollection<SOWRequirement> SOWRequirement { get; set; }
+        public ICollection<SOWRequirementTechnology> SOWRequirementTechnology { get; set; }
 
     }
     public class SOWDTO : AuditData
     {
+        public string? Title { get; set; }
         public string? Client { get; set; }
         public string? Project { get; set; }
         public DateTime? PreparedDate { get; set; }

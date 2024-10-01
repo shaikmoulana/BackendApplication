@@ -34,6 +34,7 @@ namespace DataServices.Data
         public DbSet<ClientContact> TblClientContact { get; set; }
         public DbSet<Webinars> TblWebinars { get; set; }
         public DbSet<SOWProposedTeam> TblSOWProposedTeam { get; set; }
+        public DbSet<SOWRequirementTechnology> TblSOWRequirementTechnology { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -96,12 +97,12 @@ namespace DataServices.Data
             //----------13th SOW table------------------------------------
 
             modelBuilder.Entity<SOW>()
-                        .HasOne(pt => pt.SowClients)
+                        .HasOne(pt => pt.Client)
                         .WithMany(c => c.SOWs)
                         .HasForeignKey(pt => pt.ClientId);
 
             modelBuilder.Entity<SOW>()
-                        .HasOne(pt => pt.SowProjects)
+                        .HasOne(pt => pt.Project)
                         .WithMany(c => c.SOWs)
                         .HasForeignKey(pt => pt.ProjectId);
 
@@ -123,12 +124,12 @@ namespace DataServices.Data
 
             //----------15th SOWPropsedTeam table------------------------------------
             modelBuilder.Entity<SOWProposedTeam>()
-                        .HasOne(pt => pt.SOWRequirements)
+                        .HasOne(pt => pt.SOWRequirement)
                         .WithMany(c => c.SOWProposedTeam)
                         .HasForeignKey(pt => pt.SOWRequirementId);
 
             modelBuilder.Entity<SOWProposedTeam>()
-                        .HasOne(pt => pt.Employees)
+                        .HasOne(pt => pt.Employee)
                         .WithMany(c => c.SOWProposedTeam)
                         .HasForeignKey(pt => pt.EmployeeId);
 

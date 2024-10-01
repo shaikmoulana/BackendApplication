@@ -15,9 +15,9 @@ namespace DataServices.Models
 
         public string? EmployeeId { get; set; }
         [ForeignKey("SOWRequirementId")]
-        public SOWRequirement SOWRequirements { get; set; }
+        public SOWRequirement SOWRequirement { get; set; }
         [ForeignKey("EmployeeId")]
-        public Employee Employees { get; set; }
+        public Employee Employee { get; set; }
     }
 
     public class SOWProposedTeamDTO : AuditData
