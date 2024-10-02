@@ -17,6 +17,8 @@ namespace DataServices.Models
         public ICollection<ProjectTechnology> ProjectTechnology { get; set; }
         public ICollection<EmployeeTechnology> EmployeeTechnology { get; set; }
         public ICollection<SOWRequirementTechnology> SOWRequirementTechnology { get; set; }
+        public ICollection<POCTechnology> POCTechnology { get; set; }
+
         [NotMapped] // Add this attribute to ignore in EF Core
         [JsonIgnore] // Add this attribute to ignore during JSON deserialization
         [ForeignKey("DepartmentId")]

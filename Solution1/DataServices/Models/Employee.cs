@@ -39,6 +39,7 @@ namespace DataServices.Models
         public ICollection<Project> PMOProjects { get; set; }
         public ICollection<EmployeeTechnology> Technology { get; set; }
         public ICollection<Employee> Subordinates { get; set; }
+        public ICollection<POCTeam> POCTeam { get; set; }
 
     }
     public class EmployeeProfileDTO 

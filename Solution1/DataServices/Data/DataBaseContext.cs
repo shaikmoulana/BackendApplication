@@ -35,6 +35,9 @@ namespace DataServices.Data
         public DbSet<Webinars> TblWebinars { get; set; }
         public DbSet<SOWProposedTeam> TblSOWProposedTeam { get; set; }
         public DbSet<SOWRequirementTechnology> TblSOWRequirementTechnology { get; set; }
+        public DbSet<POC> TblPOC { get; set; }
+        public DbSet<POCTeam> TblPOCTeam { get; set; }
+        public DbSet<POCTechnology> TblPOCTechnology { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -210,6 +213,22 @@ namespace DataServices.Data
                 .HasOne(c => c.Technologies)
                 .WithMany(c => c.ProjectTechnology)
                 .HasForeignKey(c => c.TechnologyId);
+
+            //---------- POC table------------------------------------
+            modelBuilder.Entity<POC>()
+                                   .HasOne(pt => pt.Client)
+                                   .WithMany(c => c.POC)
+                                   .HasForeignKey(pt => pt.ClientId);
+
+            modelBuilder.Entity<POCTeam>()
+                                   .HasOne(pt => pt.Employee)
+                                   .WithMany(c => c.POCTeam)
+                                   .HasForeignKey(pt => pt.EmployeeId);
+
+            modelBuilder.Entity<POCTechnology>()
+                                   .HasOne(pt => pt.Technology)
+                                   .WithMany(c => c.POCTechnology)
+                                   .HasForeignKey(pt => pt.TechnologyId);
 
         }
 
