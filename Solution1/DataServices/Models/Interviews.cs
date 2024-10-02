@@ -14,13 +14,13 @@ namespace DataServices.Models
         public string? StatusId { get; set; }
 
         [ForeignKey("SOWRequirementId")]
-        public SOWRequirement SOWRequirements { get; set; }
+        public SOWRequirement SOWRequirement { get; set; }
 
         [ForeignKey("Recruiter")]
         public Employee Employee { get; set; }
 
         [ForeignKey("StatusId")]
-        public InterviewStatus InterviewStatus { get; set; }
+        public InterviewStatus Status { get; set; }
 
     }
     public class InterviewsDTO : AuditData

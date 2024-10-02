@@ -137,7 +137,7 @@ namespace DataServices.Data
 
             //----------17th Interviews table------------------------------------
             modelBuilder.Entity<Interviews>()
-                        .HasOne(pt => pt.SOWRequirements)
+                        .HasOne(pt => pt.SOWRequirement)
                         .WithMany(c => c.Interviews)
                         .HasForeignKey(pt => pt.SOWRequirementId);
 
@@ -147,7 +147,7 @@ namespace DataServices.Data
                                     .HasForeignKey(pt => pt.Recruiter);
 
             modelBuilder.Entity<Interviews>()
-                                    .HasOne(pt => pt.InterviewStatus)
+                                    .HasOne(pt => pt.Status)
                                     .WithMany(c => c.Interviews)
                                     .HasForeignKey(pt => pt.StatusId);
 

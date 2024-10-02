@@ -21,8 +21,8 @@ namespace InterviewApi.Services
         public async Task<IEnumerable<InterviewsDTO>> GetAll()
         {
             var interviews = await _context.TblInterviews
-                 .Include(c => c.SOWRequirements)
-                 .Include(t => t.InterviewStatus)
+                 .Include(c => c.SOWRequirement)
+                 .Include(t => t.Status)
                  .Include(s => s.Employee)
                  .ToListAsync();
 
@@ -32,11 +32,11 @@ namespace InterviewApi.Services
                 interviewsDto.Add(new InterviewsDTO
                 {
                     Id = item.Id,
-                    SOWRequirement = item.SOWRequirements?.Technologies,
+                    SOWRequirement = item.SOWRequirement?.TeamSize.ToString(),
                     Name = item.Name,
                     InterviewDate = item.InterviewDate,
                     YearsOfExperience = item.YearsOfExperience,
-                    Status = item.InterviewStatus?.Status,
+                    Status = item.Status?.Status,
                     On_Boarding = item.On_Boarding,
                     Recruiter = item.Employee?.Name,
                     IsActive = item.IsActive,
@@ -52,8 +52,8 @@ namespace InterviewApi.Services
         public async Task<InterviewsDTO> Get(string id)
         {
             var interviews = await _context.TblInterviews
-                 .Include(c => c.SOWRequirements)
-                 .Include(t => t.InterviewStatus)
+                 .Include(c => c.SOWRequirement)
+                 .Include(t => t.Status)
                  .Include(s => s.Employee)
                  .FirstOrDefaultAsync(t => t.Id == id);
             if (interviews == null) return null;
@@ -61,11 +61,11 @@ namespace InterviewApi.Services
             return new InterviewsDTO
             {
                 Id = interviews.Id,
-                SOWRequirement = interviews.SOWRequirements?.Technologies,
+                SOWRequirement = interviews.SOWRequirement?.TeamSize.ToString(),
                 Name = interviews.Name,
                 InterviewDate = interviews.InterviewDate,
                 YearsOfExperience = interviews.YearsOfExperience,
-                Status = interviews.InterviewStatus?.Status,
+                Status = interviews.Status?.Status,
                 On_Boarding = interviews.On_Boarding,
                 Recruiter = interviews.Employee?.Name,
                 IsActive = interviews.IsActive,
@@ -79,7 +79,7 @@ namespace InterviewApi.Services
         public async Task<InterviewsDTO> Add(InterviewsDTO _object)
         {
             var sowRequirement = await _context.TblSOWRequirement
-               .FirstOrDefaultAsync(d => d.Technologies == _object.SOWRequirement);
+               .FirstOrDefaultAsync(d => d.TeamSize.ToString() == _object.SOWRequirement);
 
             if (sowRequirement == null)
                 throw new KeyNotFoundException("SOWRequirement not found");
@@ -128,7 +128,7 @@ namespace InterviewApi.Services
                 throw new KeyNotFoundException("Interview not found");
 
             var sowRequirement = await _context.TblSOWRequirement
-               .FirstOrDefaultAsync(d => d.Technologies == _object.SOWRequirement);
+               .FirstOrDefaultAsync(d => d.TeamSize.ToString() == _object.SOWRequirement);
 
             if (sowRequirement == null)
                 throw new KeyNotFoundException("SOWRequirement not found");
