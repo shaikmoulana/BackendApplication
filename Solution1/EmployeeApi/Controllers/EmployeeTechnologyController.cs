@@ -90,7 +90,7 @@ namespace EmployeeApi.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(string id, [FromBody] EmployeeTechnologyDTO empTechDto)
         {
             if (!ModelState.IsValid)

@@ -20,7 +20,7 @@ namespace DesignationApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead, Team Member")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<DesignationDTO>>> GetAll()
         {
             _logger.LogInformation("Fetching all");
@@ -36,7 +36,7 @@ namespace DesignationApi.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead, Team Member")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<DesignationDTO>> Get(string id)
         {
             _logger.LogInformation("Fetching with id: {Id}", id);
@@ -66,7 +66,7 @@ namespace DesignationApi.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Director, Project Manager")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<DesignationDTO>> Add([FromBody] DesignationDTO _object)
         {
             if (!ModelState.IsValid)
@@ -91,7 +91,7 @@ namespace DesignationApi.Controllers
 
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin, Director, Project Manager, Team Lead")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(string id, [FromBody] DesignationDTO _object)
         {
             if (!ModelState.IsValid)
