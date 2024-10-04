@@ -29,7 +29,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthApi", "AuthApi\AuthApi.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIGateway", "APIGateway\APIGateway.csproj", "{EF06A3A2-3892-40FD-BBFF-F4286C3410B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleApi", "RoleApi\RoleApi.csproj", "{6AF7C4B7-D84B-4C56-A336-5FC883649333}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoleApi", "RoleApi\RoleApi.csproj", "{6AF7C4B7-D84B-4C56-A336-5FC883649333}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POCAPI", "POCAPI\POCAPI.csproj", "{14C26460-73BB-4160-A0DD-F912A8ED8180}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,6 +95,10 @@ Global
 		{6AF7C4B7-D84B-4C56-A336-5FC883649333}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6AF7C4B7-D84B-4C56-A336-5FC883649333}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6AF7C4B7-D84B-4C56-A336-5FC883649333}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14C26460-73BB-4160-A0DD-F912A8ED8180}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14C26460-73BB-4160-A0DD-F912A8ED8180}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14C26460-73BB-4160-A0DD-F912A8ED8180}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14C26460-73BB-4160-A0DD-F912A8ED8180}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
