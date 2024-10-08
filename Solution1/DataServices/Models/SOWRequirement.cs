@@ -24,7 +24,7 @@ namespace DataServices.Models
     {
         public string? SOW { get; set; }
         public string? Designation { get; set; }
-        /*public string? Technologies { get; set; }*/
+        public string[] Technology { get; set; }
         public int? TeamSize { get; set; }
 
     }

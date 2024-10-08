@@ -68,6 +68,7 @@ namespace SOWApi.Services
 
         public async Task<SOWRequirementDTO> Add(SOWRequirementDTO _object)
         {
+            var sowRequirement = new SOWRequirement();
 
             var sow = await _context.TblSOW
               .FirstOrDefaultAsync(d => d.Title == _object.SOW);
@@ -82,22 +83,35 @@ namespace SOWApi.Services
                 throw new KeyNotFoundException("Designation not found");
 
 
-            var sowRequirement = new SOWRequirement
-            {
-                SOW = sow?.Id,
-                DesignationId = designation?.Id,
-                TeamSize = _object.TeamSize,
-                IsActive = _object.IsActive,
-                CreatedBy = _object.CreatedBy,
-                CreatedDate = _object.CreatedDate,
-                UpdatedBy = _object.UpdatedBy,
-                UpdatedDate = _object.UpdatedDate
-            };
+                sowRequirement.SOW = sow?.Id;
+            sowRequirement.DesignationId = designation?.Id;
+            sowRequirement.TeamSize = _object.TeamSize;
+            sowRequirement.IsActive = _object.IsActive;
+            sowRequirement.CreatedBy = _object.CreatedBy;
+            sowRequirement.CreatedDate = _object.CreatedDate;
+            sowRequirement.UpdatedBy = _object.UpdatedBy;
+            sowRequirement.UpdatedDate = _object.UpdatedDate;
+            
 
             _context.TblSOWRequirement.Add(sowRequirement);
             await _context.SaveChangesAsync();
-
             _object.Id = sowRequirement.Id;
+
+            if (_object.Technology != null && _object.Technology.Any())
+            {
+                foreach (var technologyId in _object.Technology)
+                {
+                    var sowRequirementTechnology = new SOWRequirementTechnology
+                    {
+                        SOWId = sowRequirement.Id,
+                        TechnologyId = technologyId.ToString(),
+                    };
+
+                    await _context.TblSOWRequirementTechnology.AddAsync(sowRequirementTechnology);
+                }
+
+                await _context.SaveChangesAsync();
+            }
             return _object;
         }
 
@@ -130,6 +144,28 @@ namespace SOWApi.Services
             sowRequirement.UpdatedDate = _object.UpdatedDate;
 
             _context.Entry(sowRequirement).State = EntityState.Modified;
+
+            if (_object.Technology != null && _object.Technology.Any())
+            {
+                // Remove old technologies
+                var sowRequirementTechnologies = await _context.TblSOWRequirementTechnology
+                    .Where(et => et.SOWId == _object.Id)
+                    .ToListAsync();
+                _context.TblSOWRequirementTechnology.RemoveRange(sowRequirementTechnologies);
+
+                // Add updated technologies
+                foreach (var technologyId in _object.Technology)
+                {
+                    var sowRequirementTechnology = new SOWRequirementTechnology
+                    {
+                        SOWId = sowRequirement.Id,
+                        TechnologyId = technologyId.ToString(),
+                    };
+
+                    await _context.TblSOWRequirementTechnology.AddAsync(sowRequirementTechnology);
+                }
+            }
+
             await _context.SaveChangesAsync();
 
             return _object;
